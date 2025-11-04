@@ -1,8 +1,9 @@
 size = 4
 bytes = []
-scale=16
-num_of_bits=32
-with open(r'C:\Users\simon\Documents\DTU\RISC_V_SIMULATOR\addlarge.bin', 'rb') as f:
+scale = 16
+num_of_bits = 32
+
+with open('RISC_V_SIMULATOR/tests/task1/addlarge.bin', 'rb') as f:
     while True:
         chunk = f.read(size)
         if not chunk:
