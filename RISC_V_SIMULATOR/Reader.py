@@ -1,16 +1,19 @@
 
 def Reader():
-    size = 4
+    size = 1
     instructions = []
     scale = 16
-    num_of_bits = 32
-
     with open('RISC_V_SIMULATOR/tests/task1/addlarge.bin', 'rb') as f:
         while True:
-            chunk = f.read(size)
+            instruction = []
+            for i in range(0,4):
+                chunk = f.read(size)
+                if not chunk:
+                    break
+                instruction.append(int(chunk.hex(),scale))
             if not chunk:
-                break
-            instructions.append(bin(int(chunk.hex(),scale))[2:].zfill(num_of_bits))
+                    break
+            instructions.append(instruction)
     return instructions
 print(len(Reader()))
 for i in Reader():
