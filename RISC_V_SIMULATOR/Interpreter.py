@@ -1,8 +1,6 @@
 def Interpreter(instruction):
     opcode = instruction[25:32]
-    #print(opcode)
     funct3 = instruction[17:20]
-    #print(funct3)
     funct7 = instruction[0:7]
     match opcode[0:3]:
         case "001":
