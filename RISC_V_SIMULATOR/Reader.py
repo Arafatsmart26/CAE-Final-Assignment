@@ -10,10 +10,12 @@ def Reader():
             chunk = f.read(size)
             if not chunk:
                 break
+            chunk = chunk[::-1]
             instructions.append(bin(int(chunk.hex(),scale))[2:].zfill(num_of_bits))
     return instructions
 for i in Reader():
     print(i)
 print(len(Reader()))
-print(Interpreter(Reader()[0]))
+for i in Reader():
+    Interpreter(i)
 
