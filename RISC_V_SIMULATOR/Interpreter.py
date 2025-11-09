@@ -27,9 +27,9 @@ def Interpreter(instruction):
                             print("SLLI")
                         case "101": #SRLI | SRAI
                             match funct7:
-                                case "0000000":
+                                case "0000000": #SRLI
                                     print("SRLI")
-                                case "0100000":
+                                case "0100000": #SRAI
                                     print("SRAI")
         
         case "011":
@@ -40,9 +40,9 @@ def Interpreter(instruction):
                     match funct3:
                         case "000": #ADD | SUB
                             match funct7:
-                                case "0000000":
+                                case "0000000": #ADD
                                     print("ADD")
-                                case "0100000":
+                                case "0100000": #SUB
                                     print("SUB")
                         case "001": #SLL
                             print("SLL")
@@ -54,9 +54,9 @@ def Interpreter(instruction):
                             print("XOR")
                         case "101": #SRL | SRA
                             match funct7:
-                                case "0000000":
+                                case "0000000": #SRL
                                     print("SRL")
-                                case "0100000":
+                                case "0100000": #SRA
                                     print("SRA")
                         case "110": #OR
                             print("OR")
