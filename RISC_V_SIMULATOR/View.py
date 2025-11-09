@@ -1,5 +1,5 @@
 size = 4
-bytes = []
+instructions = []
 scale = 16
 num_of_bits = 32
 
@@ -8,8 +8,8 @@ with open('RISC_V_SIMULATOR/tests/task1/addlarge.bin', 'rb') as f:
         chunk = f.read(size)
         if not chunk:
             break
-        bytes.append(bin(int(chunk.hex(),scale))[2:].zfill(num_of_bits))
+        instructions.append(bin(int(chunk.hex(),scale))[2:].zfill(num_of_bits))
 
-for i in bytes:
+for i in instructions:
     print(i)
-print(len(bytes))
+print(len(instructions))
