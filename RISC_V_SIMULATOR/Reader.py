@@ -1,3 +1,4 @@
+from Interpreter import Interpreter
 def Reader():
     size = 4
     instructions = []
@@ -14,4 +15,5 @@ def Reader():
 for i in Reader():
     print(i)
 print(len(Reader()))
+print(Interpreter(Reader()[0]))
 
