@@ -1,4 +1,4 @@
-from logicOperations import ADD
+from logicOperations import *
 from Registers import *
 registers=Initialize()
 def Interpreter(instruction):
@@ -42,7 +42,7 @@ def Interpreter(instruction):
                         case "000": #ADD | SUB
                             match funct7:
                                 case "0000000": #ADD
-                                    ADD.ADD(instruction, registers)
+                                    ADD(instruction, registers)
                                     print("ADD")
                                 case "0100000": #SUB
                                     print("SUB")
@@ -109,7 +109,8 @@ def Interpreter(instruction):
         case "111":
             #ECall method
             print("ECall")
-    return registers
+    #for i in registers:
+        #print(i.getContents())
 
 
         
