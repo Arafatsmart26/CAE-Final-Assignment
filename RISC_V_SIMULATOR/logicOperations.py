@@ -63,7 +63,7 @@ def LW(instruction, registers, memory):
     registers[int(instruction[20:25],scale)] = rd 
 #LOAD IMMEADIATE
 def LUI(instruction, registers):
-    registers[int(instruction[20:25],scale)].setContents(bin(int(instruction[0:20],2) << 12))
+    registers[int(instruction[20:25],scale)].setContents(bin(int(instruction[0:20],2) << 12)[2:])
 #def AUIPC(instruction, registers):
 
 #ARITHMATIC
@@ -71,7 +71,8 @@ def ADD(instruction, registers):
     rs1 = registers[int(instruction[12:17],scale)]
     rs2 = registers[int(instruction[7:12],scale)]
 
-    rd=bin(binToInt(rs1.getContents(),scale)+binToInt(rs2.getContents(),scale))[2:]
+    rd=bin(int(rs1.getContents(),scale)+int(rs2.getContents(),scale))[2:]
+    print(rd)
     registers[int(instruction[20:25],scale)].setContents(rd)
 
 
@@ -105,3 +106,5 @@ def binToInt(binaryString, scale):
         value = value - 2**len(binaryString)
     print(value)
     return value
+#def intToBin(int):
+

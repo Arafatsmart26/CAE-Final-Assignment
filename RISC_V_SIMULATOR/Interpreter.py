@@ -1,6 +1,7 @@
 from logicOperations import *
 from Registers import *
 registers=Initialize()
+memory = []
 def Interpreter(instruction):
     opcode = instruction[25:32] #We take the last 7 bits which is the opcode. Python includes the lower bound but excludes the upper
     funct3 = instruction[17:20] #Not all instructions have a funct3 or funct7 field but we define it here as it is always the same place
