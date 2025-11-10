@@ -8,18 +8,18 @@ def ADD(instruction, registers):
     print(hex(int(rd,2)))
     registers[int(instruction[20:25],scale)].setContents(rd)
     return registers
+
 def LUI(instruction, registers):
     registers[int(instruction[20:25],scale)].setContents(instruction[0:20])
     print(hex(int(instruction[0:20],scale)))
+
 def ADDI(instruction, registers):
     rs1 = registers[int(instruction[12:17],scale)]
     print(instruction[0:12])
     print(int(instruction[0:12],scale))
     registers[int(instruction[20:25],scale)].setContents(bin(int(rs1.getContents(),scale) + binToInt(instruction[0:12],scale))[2:])
 
-
-
-    #Helper function
+#Helper function
 def binToInt(binaryString, scale):
     value=int(binaryString, scale)
     if binaryString[0] == "1":
