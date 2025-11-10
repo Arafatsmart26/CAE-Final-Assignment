@@ -3,8 +3,9 @@ from Registers import *
 registers=Initialize()
 memory = []
 def Interpreter(instruction):
-    opcode = instruction[25:32] #We take the last 7 bits which is the opcode. Python includes the lower bound but excludes the upper
-    funct3 = instruction[17:20] #Not all instructions have a funct3 or funct7 field but we define it here as it is always the same place
+    opcode = instruction & 2**7-2**0 #We take the last 7 bits which is the opcode. Python includes the lower bound but excludes the upper
+    print("this is the opcode " + str(opcode))
+    funct3 = instruction & 2**15-2**12 #Not all instructions have a funct3 or funct7 field but we define it here as it is always the same place
     funct7 = instruction[0:7] #If the instruction doesn't use these fields, it won't call these variables anyway
     match opcode[0:3]: #In order to be more effective the match statement uses the first 3 bits so that every instruction runs more effectively
         case "001":

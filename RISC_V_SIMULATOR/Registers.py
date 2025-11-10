@@ -11,4 +11,4 @@ def Initialize():
     for i in range(0,32):
         registers.append(Register("0"))
     return registers
-print(len(Initialize()))
+
