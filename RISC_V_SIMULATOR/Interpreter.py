@@ -14,6 +14,7 @@ def Interpreter(instruction):
                     match funct3:
                         case "000": #ADDI
                             print("ADDI")
+                            ADDI(instruction, registers)
                         case "010": #SLTI
                             print("SLTI")
                         case "011": #SLTIU
@@ -36,15 +37,15 @@ def Interpreter(instruction):
         case "011":
             match opcode:
                 case "0110111": #LUI
-                    LUI(instruction, registers)
                     print("LUI")
+                    LUI(instruction, registers)
                 case "0110011": #Logic operations
                     match funct3:
                         case "000": #ADD | SUB
                             match funct7:
                                 case "0000000": #ADD
-                                    ADD(instruction, registers)
                                     print("ADD")
+                                    ADD(instruction, registers)
                                 case "0100000": #SUB
                                     print("SUB")
                         case "001": #SLL

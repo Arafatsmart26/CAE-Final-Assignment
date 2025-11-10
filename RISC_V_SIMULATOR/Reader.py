@@ -1,5 +1,6 @@
 from Interpreter import *
 from Registers import *
+j = 0
 def Reader():
     size = 4 #Defines how many bytes we will read at a time. 
     instructions = [] #We initializa the array that will hold our instructions
@@ -20,4 +21,6 @@ print(len(Reader()))
 for i in Reader():
     Interpreter(i)
 for i in getRegisters():
+    print("Register" + str(j))
     print(hex(int(i.getContents(),2)))
+    j += 1
