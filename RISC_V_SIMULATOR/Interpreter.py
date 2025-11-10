@@ -1,3 +1,6 @@
+from logicOperations import ADD
+from Registers import *
+registers=Initialize()
 def Interpreter(instruction):
     opcode = instruction[25:32] #We take the last 7 bits which is the opcode. Python includes the lower bound but excludes the upper
     funct3 = instruction[17:20] #Not all instructions have a funct3 or funct7 field but we define it here as it is always the same place
@@ -39,6 +42,7 @@ def Interpreter(instruction):
                         case "000": #ADD | SUB
                             match funct7:
                                 case "0000000": #ADD
+                                    ADD.ADD(instruction, registers)
                                     print("ADD")
                                 case "0100000": #SUB
                                     print("SUB")
@@ -105,6 +109,8 @@ def Interpreter(instruction):
         case "111":
             #ECall method
             print("ECall")
+    return registers
+
 
         
 
