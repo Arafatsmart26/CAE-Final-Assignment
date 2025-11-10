@@ -1,10 +1,14 @@
+scale=2
 def ADD(instruction, registers):
-    scale=2
-    registers[int(instruction[12:17],2)].setContents("00111")
-    registers[int(instruction[7:12],2)].setContents("01000")
-    rs1 = registers[int(instruction[12:17],2)]
-    rs2 = registers[int(instruction[7:12],2)]
-    rd=bin(int(rs1.getContents(),2)+int(rs2.getContents(),2))[2:]
-    registers[int(instruction[20:25],2)] = rd
+    rs1 = registers[int(instruction[12:17],scale)]
+    print(rs1.getContents())
+    rs2 = registers[int(instruction[7:12],scale)]
+    rd=bin(int(rs1.getContents(),scale)+int(rs2.getContents(),scale))[2:]
+    registers[int(instruction[20:25],scale)].setContents(rd)
     print(rd)
     return registers
+def LUI(instruction, registers):
+    registers[int(instruction[20:25],scale)].setContents(instruction[0:20])
+def ADDI(instruction, registers):
+    rs1 = registers[int(instruction[12:17],scale)]
+    registers[int(instruction[20:25],scale)].setContents(bin(int(rs1.getContents(),scale) + int(instruction[0:12],scale))[2:])

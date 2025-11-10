@@ -36,6 +36,7 @@ def Interpreter(instruction):
         case "011":
             match opcode:
                 case "0110111": #LUI
+                    LUI(instruction, registers)
                     print("LUI")
                 case "0110011": #Logic operations
                     match funct3:
@@ -109,8 +110,9 @@ def Interpreter(instruction):
         case "111":
             #ECall method
             print("ECall")
-    #for i in registers:
-        #print(i.getContents())
+def getRegisters():
+    return registers
+        
 
 
         

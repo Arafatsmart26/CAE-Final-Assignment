@@ -1,4 +1,4 @@
-from Interpreter import Interpreter
+from Interpreter import *
 from Registers import *
 def Reader():
     size = 4 #Defines how many bytes we will read at a time. 
@@ -19,3 +19,5 @@ for i in Reader():
 print(len(Reader()))
 for i in Reader():
     Interpreter(i)
+for i in getRegisters():
+    print(hex(int(i.getContents(),2)))
