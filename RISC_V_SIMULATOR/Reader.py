@@ -21,6 +21,5 @@ print(len(Reader()))
 for i in Reader():
     Interpreter(i)
 for i in getRegisters():
-    print("Register" + str(j))
-    print(hex(int(i.getContents(),2)))
+    print("Register" + str(j) + " " + hex(int(i.getContents(),2)))
     j += 1
