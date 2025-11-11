@@ -1,7 +1,7 @@
 scale=2
 #rs2 = registers[int(instruction[7:12],scale)]
 #rs1 = binToInt(registers[int(instruction[12:17],scale)].getContents(),2)
-#rd = registers[int(instruction[20:25],scale)]
+#rd = registers[2**12-2**7]
 #imm = binToInt(instruction[0:12],2)
 
 #LOAD AND STORE
@@ -63,7 +63,9 @@ def LW(instruction, registers, memory):
     registers[int(instruction[20:25],scale)] = rd 
 #LOAD IMMEADIATE
 def LUI(instruction, registers):
-    registers[int(instruction[20:25],scale)].setContents(bin(int(instruction[0:20],2) << 12)[2:])
+    registers[instruction & 2**12-2**7 >>7].setContents((instruction & 2**32-2**12)  << 12)
+    print(hex(instruction & 2**12-2**7 >>7))
+    print((hex(instruction & 2**32-2**12)  << 12))
 #def AUIPC(instruction, registers):
 
 #ARITHMATIC

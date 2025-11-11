@@ -4,113 +4,114 @@ registers=Initialize()
 memory = []
 def Interpreter(instruction):
     opcode = instruction & 2**7-2**0 #We take the last 7 bits which is the opcode. Python includes the lower bound but excludes the upper
-    print("this is the opcode " + str(opcode))
+    #print("this is the opcode " + str(opcode))
     funct3 = instruction & 2**15-2**12 #Not all instructions have a funct3 or funct7 field but we define it here as it is always the same place
-    funct7 = instruction[0:7] #If the instruction doesn't use these fields, it won't call these variables anyway
-    match opcode[0:3]: #In order to be more effective the match statement uses the first 3 bits so that every instruction runs more effectively
-        case "001":
+    funct7 = instruction & 2**32-2**25 #If the instruction doesn't use these fields, it won't call these variables anyway
+    #print(opcode & 2**7-(2**4))
+    match opcode & 2**7-2**4: #In order to be more effective the match statement uses the first 3 bits so that every instruction runs more effectively
+        case 16:
             match opcode:
-                case "0010111": #AUIPC
+                case 23: #AUIPC
                     print("AUIPC")
-                case "0010011": #Logic immeadiate operations
+                case 19: #Logic immeadiate operations
                     match funct3:
-                        case "000": #ADDI
+                        case 0: #ADDI
                             print("ADDI")
                             ADDI(instruction, registers)
-                        case "010": #SLTI
+                        case 2: #SLTI
                             print("SLTI")
-                        case "011": #SLTIU
+                        case 3: #SLTIU
                             print("SLTIU")
-                        case "100": #XORI
+                        case 4: #XORI
                             print("XORI")
-                        case "110": #ORI 
+                        case 6: #ORI 
                             print("ORI")
-                        case "111": #ANDI
+                        case 7: #ANDI
                             print("ANDI")
-                        case "001": #SLLI
+                        case 1: #SLLI
                             print("SLLI")
-                        case "101": #SRLI | SRAI
+                        case 5: #SRLI | SRAI
                             match funct7:
-                                case "0000000": #SRLI
+                                case 0: #SRLI
                                     print("SRLI")
-                                case "0100000": #SRAI
+                                case 32: #SRAI
                                     print("SRAI")
         
-        case "011":
+        case 48:
             match opcode:
-                case "0110111": #LUI
+                case 55: #LUI
                     print("LUI")
                     LUI(instruction, registers)
-                case "0110011": #Logic operations
+                case 51: #Logic operations
                     match funct3:
-                        case "000": #ADD | SUB
+                        case 0: #ADD | SUB
                             match funct7:
-                                case "0000000": #ADD
+                                case 0: #ADD
                                     print("ADD")
                                     ADD(instruction, registers)
-                                case "0100000": #SUB
+                                case 32: #SUB
                                     print("SUB")
-                        case "001": #SLL
+                        case 1: #SLL
                             print("SLL")
-                        case "010": #SLT
+                        case 2: #SLT
                             print("SLT")
-                        case "011": #SLTU
+                        case 3: #SLTU
                             print("SLTU")
-                        case "100": #XOR
+                        case 4: #XOR
                             print("XOR")
-                        case "101": #SRL | SRA
+                        case 5: #SRL | SRA
                             match funct7:
-                                case "0000000": #SRL
+                                case 0: #SRL
                                     print("SRL")
-                                case "0100000": #SRA
+                                case 32: #SRA
                                     print("SRA")
-                        case "110": #OR
+                        case 6: #OR
                             print("OR")
-                        case "111": #AND
+                        case 7: #AND
                             print("AND")
 
-        case "110":
+        case 96:
             match opcode:
-                case "1101111": #JAL
+                case 111: #JAL
                     print("JAL")
-                case "1100111": #JALR
+                case 103: #JALR
                     print("JALR")
-                case "1100011": #Branching
+                case 99: #Branching
                     match funct3:
-                        case "000": #BEQ
+                        case 0: #BEQ
                             print("BEQ")
-                        case "001": #BNE
+                        case 1: #BNE
                             print("BNE")
-                        case "100": #BLT
+                        case 4: #BLT
                             print("BLT")
-                        case "101": #BGE
+                        case 5: #BGE
                             print("BGE")
-                        case "110": #BLTU
+                        case 6: #BLTU
                             print("BLTU")
-                        case "111": #BGEU
+                        case 7: #BGEU
                             print("BGEU")
-        case "000": #load operations
+        case 0: #load operations
             match funct3:
-                case "000": #LB
+                case 0: #LB
                     print("LB")
-                case "001": #LH
+                case 1: #LH
                     print("LH")
-                case "010": #LW
+                case 2: #LW
                     print("LW")
-                case "100": #LBU
+                case 4: #LBU
                     print("LBU")
-                case "101": #LHU
+                case 5: #LHU
                     print("LHU")
 
-        case "010": # save immeadiate operations
+        case 32: # save immeadiate operations
             match funct3:
-                case "000": #SB
+                case 0: #SB
                     print("SB")
-                case "001": #SH
+                case 1: #SH
                     print("SH")
-                case "010": #SW
+                case 2: #SW
                     print("SW")
-        case "111":
+        case 112:
             #ECall method
             print("ECall")
 def getRegisters():
