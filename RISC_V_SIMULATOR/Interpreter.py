@@ -3,13 +3,13 @@ from Registers import *
 registers=Initialize()
 memory = []
 def Interpreter(instruction):
-    opcode = instruction & 2**7-2**0 #We take the last 7 bits which is the opcode. Python includes the lower bound but excludes the upper
+    opcode = instructionAnd(instruction, 7, 0) #We take the last 7 bits which is the opcode. Python includes the lower bound but excludes the upper
     #print("this is the opcode " + str(opcode))
-    funct3 = instruction & 2**15-2**12 #Not all instructions have a funct3 or funct7 field but we define it here as it is always the same place
-    funct7 = instruction & 2**32-2**25 #If the instruction doesn't use these fields, it won't call these variables anyway
+    funct3 = instructionAnd(instruction, 15, 12) #Not all instructions have a funct3 or funct7 field but we define it here as it is always the same place
+    funct7 = instructionAnd(instruction, 32, 25) #If the instruction doesn't use these fields, it won't call these variables anyway
     #print(opcode & 2**7-(2**4))
-    match opcode & 2**7-2**4: #In order to be more effective the match statement uses the first 3 bits so that every instruction runs more effectively
-        case 16:
+    match instructionAnd(instruction, 7, 4): #In order to be more effective the match statement uses the first 3 bits so that every instruction runs more effectively
+        case 1:
             match opcode:
                 case 23: #AUIPC
                     print("AUIPC")
@@ -37,7 +37,7 @@ def Interpreter(instruction):
                                 case 32: #SRAI
                                     print("SRAI")
         
-        case 48:
+        case 3:
             match opcode:
                 case 55: #LUI
                     print("LUI")
@@ -70,7 +70,7 @@ def Interpreter(instruction):
                         case 7: #AND
                             print("AND")
 
-        case 96:
+        case 6:
             match opcode:
                 case 111: #JAL
                     print("JAL")
@@ -103,7 +103,7 @@ def Interpreter(instruction):
                 case 5: #LHU
                     print("LHU")
 
-        case 32: # save immeadiate operations
+        case 1: # save immeadiate operations
             match funct3:
                 case 0: #SB
                     print("SB")
@@ -111,7 +111,7 @@ def Interpreter(instruction):
                     print("SH")
                 case 2: #SW
                     print("SW")
-        case 112:
+        case 7:
             #ECall method
             print("ECall")
 def getRegisters():
