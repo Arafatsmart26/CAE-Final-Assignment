@@ -63,7 +63,21 @@ def LW(instruction, registers, memory):
     registers[int(instruction[20:25],scale)] = rd 
 #LOAD IMMEADIATE
 def LUI(instruction, registers):
+    # instr = format(instruction, '32b')
+    # print("instr: " + instr)
+    # equiv = str(instructionAnd(instruction, 7, 0))
+    # print("equiv: " + equiv)
+    # rd = str(instructionAnd(instruction, 12, 7))
+    # print("rd: " + rd)
+    # immediate = str(instructionAnd(instruction, 32, 12))
+    # print("immediate: " + immediate)
+    # origImm = str(instruction & 0b11111111111111111111000000000000)
+    # print("origImm: " + origImm)
+    # binOrig = format(int(origImm), '32b')
+    # print("binOrig: " + binOrig)
+
     registers[instructionAnd(instruction, 12, 7)].setContents(instructionAnd(instruction, 32, 12)<<12)
+
 #def AUIPC(instruction, registers):
 
 #ARITHMATIC
@@ -73,16 +87,20 @@ def ADD(instruction, registers):
     rd = 0
 
     rd = rs1 + rs2
-    registers[instructionAnd(instruction, 12, 7 )].setContents(rd)
+    registers[instructionAnd(instruction, 12, 7)].setContents(rd)
 
 
 def ADDI(instruction, registers):
     rs1 = registers[instructionAnd(instruction,20, 15)].getContents()
-    rd = registers[instructionAnd(instruction, 12, 7 )].getContents()
-    print(rs1)
-    print(type(rs1))
-    print(instructionAnd(instruction, 32, 20))
-    rd = rs1 + instructionAnd(instruction, 32, 20)
+    rd = registers[instructionAnd(instruction, 12, 7)].getContents()
+    immBits = extractImmediate(instruction, 32, 20)
+
+    rd = rs1 + immBits
+
+    # print("rs1: " + str(instructionAnd(instruction, 20, 15)))
+    # print("imm: " + str(extractImmediate(instruction, 32, 20)))
+    # print("rd: " + str(instructionAnd(instruction, 12, 7)))
+
     registers[instructionAnd(instruction, 12, 7 )].setContents(rd)
 
 
@@ -105,13 +123,58 @@ def SLTI(instruction, registers):
 def instructionAnd(instruction, upperBound, lowerBound, bit_width = 32):
     mask = (1 << bit_width) - 1
     instruction &= mask  # limit to 'bit_width' bits
-    #print("This is instructionAnd" + str(-1 & instruction & 2**(upperBound)-2**(upperBound-1)))
-    if instruction & (2**(upperBound)-2**(upperBound-1)) > 0:
-        return ((instruction & (2**upperBound-2**lowerBound))>>lowerBound) & -2147483648
-
-
     return (instruction & (2**upperBound-2**lowerBound))>>lowerBound
 
-def signed_32Bit(integer):
-    return integer & (-1>>32)
+def extractImmediate(instruction, upperBound, lowerBound, bit_width = 32):
+    mask = (1 << bit_width) - 1
+    instruction &= mask  # limit to 'bit_width' bits
+    binImm = bin((instruction & (2**upperBound-2**lowerBound))>>lowerBound)[2:]
+    if len(binImm) < upperBound - lowerBound: # if binary value of the immediate is now shorter, then at least 1 leading '0' was removed:
+        binImm = "0" + binImm # replace missing '0' to avoid issues with positive numbers being regarded as negative on accident
 
+    return signedBinToInt(binImm)
+
+
+# def signed_32Bit(integer):
+#     return integer & (-1>>32)
+
+# function from ChatGPT for converting regular ints to what they would be if Python had signed ints
+def int32_toSigned(n: int) -> int:
+    n &= 0xFFFFFFFF  # Keep only 32 bits
+    if n & 0x80000000:
+        return n - 0x100000000
+    return n
+
+# function from ChatGPT to convert signed bit string to its equivalent signed int value
+# (e.g., the signed binary string, "11111110", would return "-2", while "011111110" would instead return "254")
+def signedBinToInt(b: str) -> int:
+    value = int(b, 2)           # convert bin → int (unsigned)
+    bits = len(b)
+
+    if value & (1 << (bits - 1)):   # if sign bit is set
+        value -= 1 << bits         # subtract 2^bits
+
+    return value
+
+# ---- DOESN'T WORK RIGHT NOW, IT SEEMS ----
+# def signed32(b: str) -> int:
+#     value = int(b, 2)
+#     if len(b) < 32:
+#         # print("value: " + str(value))
+#         value = int(sign_extend_to_32(b))
+#         print("value: " + str(value))
+#     if value & 0x80000000:
+#         value -= 0x100000000
+#     return value
+
+# # function from ChatGPT to sign-extend a binary string to become 32 bits wide
+# def sign_extend_to_32(b: str) -> str:
+#     sign_bit = b[0]                     # first bit = sign bit
+#     return sign_bit * (32 - len(b)) + b
+
+# # function to pad a binary string with 'amount'-number of 0's
+# # if input amount is less than 1 (i.e. no padding was needed after all), simply returns the input binary string
+# def pad_0_left(b: str, amount: int) -> str:
+#     if amount < 1:
+#         return b
+#     return "0" * amount + b

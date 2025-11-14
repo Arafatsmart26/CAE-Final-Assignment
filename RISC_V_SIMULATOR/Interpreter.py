@@ -4,10 +4,8 @@ registers=Initialize()
 memory = []
 def Interpreter(instruction):
     opcode = instructionAnd(instruction, 7, 0) #We take the last 7 bits which is the opcode. Python includes the lower bound but excludes the upper
-    #print("this is the opcode " + str(opcode))
     funct3 = instructionAnd(instruction, 15, 12) #Not all instructions have a funct3 or funct7 field but we define it here as it is always the same place
     funct7 = instructionAnd(instruction, 32, 25) #If the instruction doesn't use these fields, it won't call these variables anyway
-    #print(opcode & 2**7-(2**4))
     match instructionAnd(instruction, 7, 4): #In order to be more effective the match statement uses the first 3 bits so that every instruction runs more effectively
         case 1:
             match opcode:
