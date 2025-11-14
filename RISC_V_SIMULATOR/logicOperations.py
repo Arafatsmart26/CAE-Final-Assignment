@@ -61,6 +61,7 @@ def LW(instruction, registers, memory):
         rd = 0x00000000
     
     registers[int(instruction[20:25],scale)] = rd 
+    
 #LOAD IMMEADIATE
 def LUI(instruction, registers):
     # instr = format(instruction, '32b')
@@ -76,7 +77,13 @@ def LUI(instruction, registers):
     # binOrig = format(int(origImm), '32b')
     # print("binOrig: " + binOrig)
 
-    registers[instructionAnd(instruction, 12, 7)].setContents(instructionAnd(instruction, 32, 12)<<12)
+    rd = instructionAnd(instruction, 12, 7)
+    imm = extractImmediate(instruction, 32, 12, "U") # 'LUI' is a U-type operation, so use "U"
+
+    # print("extracted immedate: " + str(imm))
+    # print("extracted immediate bits" + format(imm, 'b'))
+
+    registers[rd].setContents(imm<<12)
 
 #def AUIPC(instruction, registers):
 
@@ -84,35 +91,35 @@ def LUI(instruction, registers):
 def ADD(instruction, registers):
     rs1 = registers[instructionAnd(instruction, 20, 15)].getContents()
     rs2 = registers[instructionAnd(instruction, 25, 20)].getContents()
-    rd = 0
+    # rd = 0
 
     rd = rs1 + rs2
     registers[instructionAnd(instruction, 12, 7)].setContents(rd)
 
 
 def ADDI(instruction, registers):
-    rs1 = registers[instructionAnd(instruction,20, 15)].getContents()
+    rs1 = registers[instructionAnd(instruction, 20, 15)].getContents()
     rd = registers[instructionAnd(instruction, 12, 7)].getContents()
-    immBits = extractImmediate(instruction, 32, 20)
+    immBits = extractImmediate(instruction, 32, 20, "I") # 'ADDI' is an I-type operation, so use "I"
 
     rd = rs1 + immBits
 
     # print("rs1: " + str(instructionAnd(instruction, 20, 15)))
-    # print("imm: " + str(extractImmediate(instruction, 32, 20)))
+    # print("imm: " + str(extractImmediate(instruction, 32, 20, "I")))
     # print("rd: " + str(instructionAnd(instruction, 12, 7)))
 
-    registers[instructionAnd(instruction, 12, 7 )].setContents(rd)
+    registers[instructionAnd(instruction, 12, 7)].setContents(rd)
 
 
 
 def SLTI(instruction, registers):
-    rs1 = registers[instructionAnd(instruction,20, 15)].getContents()
-    rd = registers[instructionAnd(instruction, 12, 7 )].getContents()
-    imm = instructionAnd(instruction, 32, 20)
+    rs1 = registers[instructionAnd(instruction, 20, 15)].getContents()
+    rd = registers[instructionAnd(instruction, 12, 7)].getContents()
+    imm = extractImmediate(instruction, 32, 20, "I") # 'SLTI' is an I-type instruction, so use "I"
 
     rd = int(rs1 < imm)
 
-    registers[instructionAnd(instruction, 12, 7 )] = rd
+    registers[instructionAnd(instruction, 12, 7)].setContents(rd)
 
 #def SLTIU(instruction, registers):
 
@@ -125,14 +132,39 @@ def instructionAnd(instruction, upperBound, lowerBound, bit_width = 32):
     instruction &= mask  # limit to 'bit_width' bits
     return (instruction & (2**upperBound-2**lowerBound))>>lowerBound
 
-def extractImmediate(instruction, upperBound, lowerBound, bit_width = 32):
+def extractImmediate(instruction, upperBound, lowerBound, binType, bit_width = 32):
+    """
+    Bounds for extraction are: [lowerBound, upperBound[, i.e. lowerBound-bit is included, while upperBound-bit is NOT included.
+    binType:
+    "U" = for upper immediate stuff, like 'LUI' and 'AUIPC'
+    "I" = for signed immediates, including arithmetic-, load- and shift-operations, like 'addi', 'lw' and 'slli' (and also 'jalr', surprisingly)
+    "S" = for store operations, like 'sw'
+    "UJ" or "J" = for jump operations, like 'jal' (but NOT 'jalr')
+    "SB" or "B" = for branch operations, like 'bne'
+    The "R" format is not used here, since that format contains no immediates
+    """
     mask = (1 << bit_width) - 1
     instruction &= mask  # limit to 'bit_width' bits
     binImm = bin((instruction & (2**upperBound-2**lowerBound))>>lowerBound)[2:]
     if len(binImm) < upperBound - lowerBound: # if binary value of the immediate is now shorter, then at least 1 leading '0' was removed:
         binImm = "0" + binImm # replace missing '0' to avoid issues with positive numbers being regarded as negative on accident
 
-    return signedBinToInt(binImm)
+    # not all immediates are signed, so pick the right value to return:
+    match binType:
+        case "U":
+            return int(binImm, 2) # used for operations with upper immediates, like 'lui' and 'auipc'
+        case "I":
+            return signedBinToInt(binImm) # used for signed immediates, including load- and shift-operations, like 'lw' or 'slli'
+        case "S":
+            print("PROBLEM: 'STORE'-instruction immediates not yet implemented! Defaulting to signed value!")
+            return signedBinToInt(binImm) # used for store-operations, like 'sw'
+        case "UJ":
+            print("PROBLEM: 'JUMP'-instruction immediates not yet implemented! Defaulting to signed value (since jump instructions use signed immediates)!")
+            return signedBinToInt(binImm) # used for jump-operations, like 'jal'
+        case _:
+            print("PROBLEM: 'BRANCH'-instruction immediates not yet implemented! Defaulting to signed value (since branch instructions use signed immediates)!")
+            return signedBinToInt(binImm) # used for branch-operations, like 'bne'
+            
 
 
 # def signed_32Bit(integer):
