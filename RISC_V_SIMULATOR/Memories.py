@@ -1,5 +1,5 @@
 class Memory:
-    def __init__(self, memory_address = 0x00000000, content = "0" ):
+    def __init__(self, memory_address = 0x00000000, content = 0 ):
         self.memory_address = memory_address
         self.content = content
     def setMemoryAddress(self, memory_address):
