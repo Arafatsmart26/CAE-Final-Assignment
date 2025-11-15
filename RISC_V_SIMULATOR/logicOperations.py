@@ -98,7 +98,7 @@ def ADD(instruction, registers):
 def ADDI(instruction, registers):
     rs1_val = registers[instructionAnd(instruction, 20, 15)].getContents()
     imm = extractImmediate(instruction, 32, 20, "signed") # 'ADDI' is an I-type operation, so use "I"
-
+    
     registers[instructionAnd(instruction, 12, 7)].setContents(rs1_val + imm)
 
 
