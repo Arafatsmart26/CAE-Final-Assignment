@@ -6,61 +6,49 @@ scale=2
 
 #LOAD AND STORE
 def LB(instruction, registers, memory):
-    memoryCheck = 0
-    size = 8
+    size = 8 # number of bits to (attempt to) read from memory
 
-    rs1 = registers[instructionAnd(instruction,20, 15)].getContents()
-    rd = registers[instructionAnd(instruction, 12, 7 )]
-    imm = instructionAnd(instruction, 32, 20)
+    rs1_val = registers[instructionAnd(instruction,20, 15)].getContents()
+    imm = extractImmediate(instruction, 32, 20, "signed") # Load operations all use signed immediate-offsets
+    mem_val = 0x00 # equal to 1 byte
 
-    address = (hex(rs1+imm))
+    address = (hex(rs1_val+imm))
     for i in memory:
         if address == i.getMemoryAddress():
-            rd = i.getMemoryContent()[0:size]#Fix this
-            memoryCheck = 1
+            mem_val = i.getMemoryContent()[0:size]#Fix this
             break
-    if memoryCheck == 0:
-        rd = 0x00
     
-    registers[instructionAnd(instruction, 12, 7 )] = rd 
+    registers[instructionAnd(instruction, 12, 7 )].setContents(mem_val)
 
 def LH(instruction, registers, memory):
-    memoryCheck = 0
-    size = 16
+    size = 16 # number of bits to (attempt to) read from memory
 
-    rs1 = binToInt(registers[int(instruction[12:17],scale)].getContents(),2)
-    rd = registers[int(instruction[20:25],scale)]
-    imm = binToInt(instruction[0:12],scale)
+    rs1_val = registers[instructionAnd(instruction,20, 15)].getContents()
+    imm = extractImmediate(instruction, 32, 20, "signed") # Load operations all use signed immediate-offsets
+    mem_val = 0x0000 # equal to 2 bytes
 
-    address = (hex(rs1+imm))
+    address = (hex(rs1_val+imm))
     for i in memory:
         if address == i.getMemoryAddress():
-            rd = i.getMemoryContent()[0:size]
-            memoryCheck = 1
+            mem_val = i.getMemoryContent()[0:size]#Fix this
             break
-    if memoryCheck == 0:
-        rd = 0x0000
     
-    registers[int(instruction[20:25],scale)] = rd 
+    registers[instructionAnd(instruction, 12, 7 )].setContents(mem_val)
 
 def LW(instruction, registers, memory):
-    memoryCheck = 0
-    size = 32
+    size = 32 # number of bits to (attempt to) read from memory
 
-    rs1 = binToInt(registers[int(instruction[12:17],scale)].getContents(),2)
-    rd = registers[int(instruction[20:25],scale)]
-    imm = binToInt(instruction[0:12],scale)
+    rs1_val = registers[instructionAnd(instruction,20, 15)].getContents()
+    imm = extractImmediate(instruction, 32, 20, "signed") # Load operations all use signed immediate-offsets
+    mem_val = 0x00000000 # equal to 4 bytes
 
-    address = (hex(rs1+imm))
+    address = (hex(rs1_val+imm))
     for i in memory:
         if address == i.getMemoryAddress():
-            rd = i.getMemoryContent()[0:size]
-            memoryCheck = 1
+            mem_val = i.getMemoryContent()[0:size]#Fix this
             break
-    if memoryCheck == 0:
-        rd = 0x00000000
     
-    registers[int(instruction[20:25],scale)] = rd 
+    registers[instructionAnd(instruction, 12, 7 )].setContents(mem_val)
     
 #LOAD IMMEADIATE
 def LUI(instruction, registers):
