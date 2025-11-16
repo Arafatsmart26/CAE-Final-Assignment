@@ -31,5 +31,6 @@ def Reader(filename):
         j += 1
 
     return instructions
-# for i in Reader():
-#     print(i)
+
+file = "RISC_V_SIMULATOR/tests/task4/t11.bin"
+Reader(file)

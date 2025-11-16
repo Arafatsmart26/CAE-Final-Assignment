@@ -10,9 +10,9 @@ def LB(instruction, registers, memory):
 
     rs1_val = registers[instructionAnd(instruction,20, 15)].getContents()
     imm = extractImmediate(instruction, 32, 20, "signed") # Load operations all use signed immediate-offsets
-    mem_val = 0x00 # equal to 1 byte
+    mem_val = 0
 
-    address = (hex(rs1_val+imm))
+    address = rs1_val + imm
     for i in memory:
         if address == i.getMemoryAddress():
             mem_val = i.getMemoryContent()[0:size]#Fix this
@@ -25,9 +25,9 @@ def LH(instruction, registers, memory):
 
     rs1_val = registers[instructionAnd(instruction,20, 15)].getContents()
     imm = extractImmediate(instruction, 32, 20, "signed") # Load operations all use signed immediate-offsets
-    mem_val = 0x0000 # equal to 2 bytes
+    mem_val = 0
 
-    address = (hex(rs1_val+imm))
+    address = rs1_val + imm
     for i in memory:
         if address == i.getMemoryAddress():
             mem_val = i.getMemoryContent()[0:size]#Fix this
@@ -36,20 +36,45 @@ def LH(instruction, registers, memory):
     registers[instructionAnd(instruction, 12, 7 )].setContents(mem_val)
 
 def LW(instruction, registers, memory):
-    size = 32 # number of bits to (attempt to) read from memory
+    # size = 32 # number of bits to (attempt to) read from memory - 32 bits means the entire 4-byte value in memory
 
     rs1_val = registers[instructionAnd(instruction,20, 15)].getContents()
     imm = extractImmediate(instruction, 32, 20, "signed") # Load operations all use signed immediate-offsets
-    mem_val = 0x00000000 # equal to 4 bytes
+    mem_val = 0
 
-    address = (hex(rs1_val+imm))
+    address = rs1_val + imm
     for i in memory:
         if address == i.getMemoryAddress():
-            mem_val = i.getMemoryContent()[0:size]#Fix this
+            mem_val = i.getMemoryContent()
             break
     
     registers[instructionAnd(instruction, 12, 7 )].setContents(mem_val)
-    
+
+def SB(instruction, registers, memory):
+    print("instruction: " + format(instruction, '032b'))
+    print("rs1: " + format(instructionAnd(instruction, 20, 15), '05b'))
+    print("rs2: " + format(instructionAnd(instruction, 25, 20), '05b'))
+
+    rs1_val = registers[instructionAnd(instruction, 20, 15)].getContents()
+    rs2_val = registers[instructionAnd(instruction, 25, 10)].getContents()
+    imm_upper = extractImmediate(instruction, 32, 25, "unsigned") << 5 # upper 7 bits of the immediate
+    imm_lower = extractImmediate(instruction, 12, 7, "unsigned") # lower 5 bits of the immediate
+
+    print("rs1: " + str(rs1_val))
+    print("rs2: " + str(rs2_val))
+    print("imm_upper_bits: " + bin(imm_upper >> 5))
+    print("imm_lower_bits: " + bin(rs1_val))
+
+
+def SH(instruction, registers, memory):
+    rs1_val = registers[instructionAnd(instruction, 20, 15)].getContents()
+    rs2_val = registers[instructionAnd(instruction, 25, 10)].getContents()
+
+def SW(instruction, registers, memory):
+    rs1_val = registers[instructionAnd(instruction, 20, 15)].getContents()
+    rs2_val = registers[instructionAnd(instruction, 25, 10)].getContents()
+
+
 #LOAD IMMEADIATE
 def LUI(instruction, registers):
     # instr = format(instruction, '32b')
@@ -66,7 +91,7 @@ def LUI(instruction, registers):
     # print("binOrig: " + binOrig)
 
     # rd = instructionAnd(instruction, 12, 7)
-    imm = extractImmediate(instruction, 32, 12, "unsigned") # 'LUI' is a U-type operation, so use "U"
+    imm = extractImmediate(instruction, 32, 12, "unsigned")
 
     # print("extracted immedate: " + str(imm))
     # print("extracted immediate bits" + format(imm, 'b'))
@@ -91,7 +116,7 @@ def SUB(instruction, registers):
 
 def ADDI(instruction, registers):
     rs1_val = registers[instructionAnd(instruction, 20, 15)].getContents()
-    imm = extractImmediate(instruction, 32, 20, "signed") # 'ADDI' is an I-type operation, so use "I"
+    imm = extractImmediate(instruction, 32, 20, "signed")
 
     registers[instructionAnd(instruction, 12, 7)].setContents(rs1_val + imm)
 
@@ -127,7 +152,7 @@ def SLTU(instruction, registers):
 
 def SLTI(instruction, registers):
     rs1 = registers[instructionAnd(instruction, 20, 15)].getContents()
-    imm = extractImmediate(instruction, 32, 20, "signed") # 'SLTI' is an I-type instruction, so use "I"
+    imm = extractImmediate(instruction, 32, 20, "signed")
 
     registers[instructionAnd(instruction, 12, 7)].setContents(int(rs1 < imm))
 
