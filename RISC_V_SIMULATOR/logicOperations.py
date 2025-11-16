@@ -82,14 +82,35 @@ def ADD(instruction, registers):
 
     registers[instructionAnd(instruction, 12, 7)].setContents(rs1_val + rs2_val)
 
+def SUB(instruction, registers):
+    rs1_val = registers[instructionAnd(instruction, 20, 15)].getContents()
+    rs2_val = registers[instructionAnd(instruction, 25, 20)].getContents()
+
+    registers[instructionAnd(instruction, 12, 7)].setContents(rs1_val - rs2_val)
+
 
 def ADDI(instruction, registers):
     rs1_val = registers[instructionAnd(instruction, 20, 15)].getContents()
     imm = extractImmediate(instruction, 32, 20, "signed") # 'ADDI' is an I-type operation, so use "I"
-    
+
     registers[instructionAnd(instruction, 12, 7)].setContents(rs1_val + imm)
 
 
+def SLL(instruction, registers):
+    rs1_val = registers[instructionAnd(instruction, 20, 15)].getContents()
+    rs2_val = registers[instructionAnd(instruction, 25, 20)].getContents()
+
+    registers[instructionAnd(instruction, 12, 7)].setContents(rs1_val << rs2_val)
+
+def SLT(instruction, registers):
+    rs1_val = registers[instructionAnd(instruction, 20, 15)].getContents()
+    rs2_val = registers[instructionAnd(instruction, 25, 20)].getContents()
+
+    if rs1_val < rs2_val:
+        registers[instructionAnd(instruction, 12, 7)].setContents(1)
+    else: 
+        registers[instructionAnd(instruction, 12, 7)].setContents(0)
+    
 
 def SLTI(instruction, registers):
     rs1 = registers[instructionAnd(instruction, 20, 15)].getContents()

@@ -49,10 +49,13 @@ def Interpreter(instruction):
                                     ADD(instruction, registers)
                                 case 32: #SUB
                                     print("SUB")
+                                    SUB(instruction, registers)
                         case 1: #SLL
                             print("SLL")
+                            SLL(instruction, registers)
                         case 2: #SLT
                             print("SLT")
+                            SLT(instruction, registers)
                         case 3: #SLTU
                             print("SLTU")
                         case 4: #XOR
