@@ -111,6 +111,19 @@ def SLT(instruction, registers):
     else: 
         registers[instructionAnd(instruction, 12, 7)].setContents(0)
     
+def SLTU(instruction, registers):
+    rs1_val = registers[instructionAnd(instruction, 20, 15)].getContents()
+    rs2_val = registers[instructionAnd(instruction, 25, 20)].getContents()
+
+    if rs1_val < 0 :
+        rs1_val = rs1_val + (1<<rs1_val.bit_length())
+    if rs2_val < 0 :
+        rs2_val = rs2_val + (1<<rs2_val.bit_length())
+
+    if rs1_val < rs2_val:
+        registers[instructionAnd(instruction, 12, 7)].setContents(1)
+    else: 
+        registers[instructionAnd(instruction, 12, 7)].setContents(0)
 
 def SLTI(instruction, registers):
     rs1 = registers[instructionAnd(instruction, 20, 15)].getContents()
