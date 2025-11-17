@@ -126,13 +126,62 @@ def XORI(instruction, registers):
 
     registers[instructionAnd(instruction, 12, 7)].setContents(rs1_val ^ imm)
 
-#Set operations
+def ORI(instruction, registers):
+    rs1_val = registers[instructionAnd(instruction, 20, 15)].getContents()
+    imm = extractImmediate(instruction, 32, 20, "signed")
+
+    registers[instructionAnd(instruction, 12, 7)].setContents(rs1_val | imm)
+
+def ANDI(instruction, registers):
+    rs1_val = registers[instructionAnd(instruction, 20, 15)].getContents()
+    imm = extractImmediate(instruction, 32, 20, "signed")
+
+    registers[instructionAnd(instruction, 12, 7)].setContents(rs1_val & imm)
+
+def XOR(instruction, registers):
+    rs1_val = registers[instructionAnd(instruction, 20, 15)].getContents()
+    rs2_val = registers[instructionAnd(instruction, 25, 20)].getContents()
+
+    registers[instructionAnd(instruction, 12, 7)].setContents(rs1_val ^ rs2_val)
+
+def OR(instruction, registers):
+    rs1_val = registers[instructionAnd(instruction, 20, 15)].getContents()
+    rs2_val = registers[instructionAnd(instruction, 25, 20)].getContents()
+
+    registers[instructionAnd(instruction, 12, 7)].setContents(rs1_val | rs2_val)
+
+def AND(instruction, registers):
+    rs1_val = registers[instructionAnd(instruction, 20, 15)].getContents()
+    rs2_val = registers[instructionAnd(instruction, 25, 20)].getContents()
+
+    registers[instructionAnd(instruction, 12, 7)].setContents(rs1_val & rs2_val)
+
+#Shift operations
 def SLL(instruction, registers):
     rs1_val = registers[instructionAnd(instruction, 20, 15)].getContents()
     rs2_val = registers[instructionAnd(instruction, 25, 20)].getContents()
 
     registers[instructionAnd(instruction, 12, 7)].setContents(rs1_val << rs2_val)
 
+def SLLI(instruction, registers):
+    rs1_val = registers[instructionAnd(instruction, 20, 15)].getContents()
+    imm = extractImmediate(instruction, 32, 20, "unsigned")
+
+    registers[instructionAnd(instruction, 12, 7)].setContents(rs1_val << imm)
+
+def SRLI(instruction, registers):
+    rs1_val = registers[instructionAnd(instruction, 20, 15)].getContents()
+    imm = extractImmediate(instruction, 32, 20, "unsigned")
+
+    registers[instructionAnd(instruction, 12, 7)].setContents(rs1_val >> imm)
+
+def SRAI(instruction, registers):#Se mere på den her, skal beholde sin sign bit så den stadig er negativ
+    rs1_val = registers[instructionAnd(instruction, 20, 15)].getContents()
+    imm = extractImmediate(instruction, 32, 20, "unsigned")
+
+    registers[instructionAnd(instruction, 12, 7)].setContents(rs1_val >> imm)
+
+#Set operations
 def SLT(instruction, registers):
     rs1_val = registers[instructionAnd(instruction, 20, 15)].getContents()
     rs2_val = registers[instructionAnd(instruction, 25, 20)].getContents()
@@ -170,7 +219,10 @@ def SLTIU(instruction, registers):
     rs1_val = registers[instructionAnd(instruction, 20, 15)].getContents()
     imm = extractImmediate(instruction, 32, 20, "unsigned")
 
-    registers[instructionAnd(instruction, 12, 7)].setContents(rs1_val < imm)
+    if rs1_val < imm:
+        registers[instructionAnd(instruction, 12, 7)].setContents(1)
+    else: 
+        registers[instructionAnd(instruction, 12, 7)].setContents(0)
 
 
 

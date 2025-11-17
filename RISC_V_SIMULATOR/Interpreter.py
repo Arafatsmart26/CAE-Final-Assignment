@@ -27,14 +27,18 @@ def Interpreter(instruction):
                             XORI(instruction, registers)
                         case 6: #ORI 
                             print("ORI")
+                            ORI(instruction, registers)
                         case 7: #ANDI
                             print("ANDI")
+                            ANDI(instruction, registers)
                         case 1: #SLLI
                             print("SLLI")
+                            SLLI(instruction, registers)
                         case 5: #SRLI | SRAI
                             match funct7:
                                 case 0: #SRLI
                                     print("SRLI")
+                                    SRLI(instruction, registers)
                                 case 32: #SRAI
                                     print("SRAI")
         
@@ -64,6 +68,7 @@ def Interpreter(instruction):
                             SLTU(instruction, registers)
                         case 4: #XOR
                             print("XOR")
+                            XOR(instruction, registers)
                         case 5: #SRL | SRA
                             match funct7:
                                 case 0: #SRL
@@ -72,8 +77,10 @@ def Interpreter(instruction):
                                     print("SRA")
                         case 6: #OR
                             print("OR")
+                            OR(instruction, registers)
                         case 7: #AND
                             print("AND")
+                            AND(instruction, registers)
 
         case 6:
             match opcode:
