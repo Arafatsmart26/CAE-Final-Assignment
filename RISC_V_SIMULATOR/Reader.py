@@ -1,7 +1,6 @@
 from Interpreter import *
 from Registers import *
 def Reader(filename):
-    j = 0
     size = 4 #Defines how many bytes we will read at a time. 
     instructions = [] #We initializa the array that will hold our instructions
     scale = 16 #This number is used to tell the int function that the number it parses is in base 16
@@ -24,13 +23,9 @@ def Reader(filename):
     # print(instr1)
     # print(instr2)
     # print(instr3)
-    for i in instructions:
-        Interpreter(i)
-    for i in getRegisters():
-        print("Register_" + str(j) + " " + hex(i.getContents()))
-        j += 1
-
+    #for i in instructions:
+    #    Interpreter(i)
+    #for i in getRegisters():
+    #    print("Register_" + str(j) + " " + hex(i.getContents()))
+    #    j += 1
     return instructions
-
-file = "RISC_V_SIMULATOR/tests/task4/t11.bin"
-Reader(file)
