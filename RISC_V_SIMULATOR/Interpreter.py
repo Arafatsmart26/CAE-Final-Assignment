@@ -41,6 +41,7 @@ def Interpreter(instruction):
                                     SRLI(instruction, registers)
                                 case 32: #SRAI
                                     print("SRAI")
+                                    SRAI(instruction, registers)#Doesn't work
         
         case 3:
             match opcode:
@@ -73,8 +74,10 @@ def Interpreter(instruction):
                             match funct7:
                                 case 0: #SRL
                                     print("SRL")
+                                    SRL(instruction, registers)
                                 case 32: #SRA
                                     print("SRA")
+                                    SRA(instruction, registers)#Doesn't work
                         case 6: #OR
                             print("OR")
                             OR(instruction, registers)
