@@ -185,7 +185,7 @@ def SRL(instruction, registers):
     rs1_val = registers[instructionAnd(instruction, 20, 15)].getContents()
     rs2_val = registers[instructionAnd(instruction, 25, 20)].getContents()
 
-    registers[instructionAnd(instruction, 12, 7)].setContents(rs1_val << rs2_val)
+    registers[instructionAnd(instruction, 12, 7)].setContents(rs1_val >> rs2_val)
 
 def SRA(instruction, registers):#We need to do this arithmatic
     rs1_val = registers[instructionAnd(instruction, 20, 15)].getContents()

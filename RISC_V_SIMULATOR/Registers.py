@@ -3,7 +3,8 @@ class Register:
         self.contents=contents
 
     def setContents(self, contents):
-        self.contents = contents
+        mask = (1 << 32) - 1
+        self.contents = contents & mask
 
     def getContents(self):
         return self.contents
