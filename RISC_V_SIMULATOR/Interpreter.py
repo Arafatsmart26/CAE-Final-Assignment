@@ -118,7 +118,7 @@ def Interpreter(instruction):
                 case 5: #LHU
                     print("LHU")
 
-        case 1: # save immeadiate operations
+        case 2: # save immeadiate operations
             match funct3:
                 case 0: #SB
                     print("SB")
