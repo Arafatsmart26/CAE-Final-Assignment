@@ -1,7 +1,7 @@
 from logicOperations import *
 from Registers import *
 registers=Initialize()
-mem = []
+memory = []
 def Interpreter(instruction):
     opcode = instructionAnd(instruction, 7, 0) #We take the last 7 bits which is the opcode. Python includes the lower bound but excludes the upper
     funct3 = instructionAnd(instruction, 15, 12) #Not all instructions have a funct3 or funct7 field but we define it here as it is always the same place
@@ -18,10 +18,13 @@ def Interpreter(instruction):
                             ADDI(instruction, registers)
                         case 2: #SLTI
                             print("SLTI")
+                            SLTI(instruction, registers)
                         case 3: #SLTIU
                             print("SLTIU")
+                            SLTIU(instruction, registers)
                         case 4: #XORI
                             print("XORI")
+                            XORI(instruction, registers)
                         case 6: #ORI 
                             print("ORI")
                         case 7: #ANDI
@@ -58,6 +61,7 @@ def Interpreter(instruction):
                             SLT(instruction, registers)
                         case 3: #SLTU
                             print("SLTU")
+                            SLTU(instruction, registers)
                         case 4: #XOR
                             print("XOR")
                         case 5: #SRL | SRA
@@ -95,33 +99,26 @@ def Interpreter(instruction):
             match funct3:
                 case 0: #LB
                     print("LB")
-                    LB(instruction, registers, mem)
                 case 1: #LH
                     print("LH")
-                    LH(instruction, registers, mem)
                 case 2: #LW
                     print("LW")
-                    LW(instruction, registers, mem)
                 case 4: #LBU
                     print("LBU")
                 case 5: #LHU
                     print("LHU")
 
-        case 2: # save immeadiate operations
+        case 1: # save immeadiate operations
             match funct3:
                 case 0: #SB
                     print("SB")
-                    SB(instruction, registers, mem)
                 case 1: #SH
                     print("SH")
-                    SH(instruction, registers, mem)
                 case 2: #SW
                     print("SW")
-                    SW(instruction, registers, mem)
         case 7:
             #ECall method
             print("ECall")
-
 def getRegisters():
     return registers
         

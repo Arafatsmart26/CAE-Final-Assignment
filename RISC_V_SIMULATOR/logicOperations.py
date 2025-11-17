@@ -120,7 +120,13 @@ def ADDI(instruction, registers):
 
     registers[instructionAnd(instruction, 12, 7)].setContents(rs1_val + imm)
 
+def XORI(instruction, registers):
+    rs1_val = registers[instructionAnd(instruction, 20, 15)].getContents()
+    imm = extractImmediate(instruction, 32, 20, "signed")
 
+    registers[instructionAnd(instruction, 12, 7)].setContents(rs1_val ^ imm)
+
+#Set operations
 def SLL(instruction, registers):
     rs1_val = registers[instructionAnd(instruction, 20, 15)].getContents()
     rs2_val = registers[instructionAnd(instruction, 25, 20)].getContents()
@@ -154,10 +160,17 @@ def SLTI(instruction, registers):
     rs1 = registers[instructionAnd(instruction, 20, 15)].getContents()
     imm = extractImmediate(instruction, 32, 20, "signed")
 
-    registers[instructionAnd(instruction, 12, 7)].setContents(int(rs1 < imm))
+    if rs1 < imm:
+        registers[instructionAnd(instruction, 12, 7)].setContents(1)
+    else: 
+        registers[instructionAnd(instruction, 12, 7)].setContents(0)
 
-#def SLTIU(instruction, registers):
 
+def SLTIU(instruction, registers):
+    rs1_val = registers[instructionAnd(instruction, 20, 15)].getContents()
+    imm = extractImmediate(instruction, 32, 20, "unsigned")
+
+    registers[instructionAnd(instruction, 12, 7)].setContents(rs1_val < imm)
 
 
 
