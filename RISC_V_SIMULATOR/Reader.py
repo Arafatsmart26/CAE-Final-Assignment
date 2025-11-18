@@ -29,3 +29,7 @@ def Reader(filename):
     #    print("Register_" + str(j) + " " + hex(i.getContents()))
     #    j += 1
     return instructions
+
+# file = "RISC_V_SIMULATOR/tests/task4/t11.bin"
+# for i in Reader(file):
+#     Interpreter(i)

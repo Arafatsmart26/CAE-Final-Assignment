@@ -15,8 +15,8 @@ class Memory:
     def getMemoryContent(self):
         return self.content
 
-    def addMemory(self, memory_address, content):
-        return Memory(memory_address,content)
-
     def addToMemoryContent(self,content):
         self.content += content
+
+def addMemory(memory_address, content):
+    return Memory(memory_address,content)

@@ -10,7 +10,7 @@ def run_code(filename):
     while program_counter.getInstructionCounter() < program_counter.getMaxInstruction():
         counter = program_counter.getInstructionCounter()
         instruction = instructions[counter]
-        Interpreter(instruction)
+        Interpreter(instruction, counter)
         program_counter.nextInstruction()
     for i in getRegisters():
         print("Register_" + str(j) + " " + hex(i.getContents()))
