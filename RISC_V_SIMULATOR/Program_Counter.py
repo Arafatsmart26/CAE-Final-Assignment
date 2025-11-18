@@ -15,6 +15,9 @@ class PC:
     
     def setInstructionCounter(self, counter):
         self.counter = counter
+    
+    def addToProgramCounter(self, num):
+        self.counter += num
 
     def getMaxInstruction(self):
         return len(self.instructions)

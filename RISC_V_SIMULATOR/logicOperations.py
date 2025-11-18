@@ -245,6 +245,59 @@ def SLTIU(instruction, registers):
     else: 
         registers[instructionAnd(instruction, 12, 7)].setContents(0)
 
+#Branch instructions
+def BEQ(instruction, registers, PC):
+    rs1_val = registers[instructionAnd(instruction, 20, 15)].getContents()
+    rs2_val = registers[instructionAnd(instruction, 25, 20)].getContents()
+
+    value = extractImmediate(instruction, 12, 7, "signed")
+
+    if rs1_val == rs2_val:
+        PC.addToProgramCounter(value)
+
+def BNE(instruction, registers, PC):
+    rs1_val = registers[instructionAnd(instruction, 20, 15)].getContents()
+    rs2_val = registers[instructionAnd(instruction, 25, 20)].getContents()
+
+    value = extractImmediate(instruction, 12, 7, "signed")
+
+    if rs1_val != rs2_val:
+        PC.addToProgramCounter(value)
+
+def BLT(instruction, registers, PC):
+    rs1_val = registers[instructionAnd(instruction, 20, 15)].getContents()
+    rs2_val = registers[instructionAnd(instruction, 25, 20)].getContents()
+
+    value = extractImmediate(instruction, 12, 7, "signed")
+
+    if rs1_val < rs2_val:
+        PC.addToProgramCounter(value)
+
+def BGE(instruction, registers, PC):
+    rs1_val = registers[instructionAnd(instruction, 20, 15)].getContents()
+    rs2_val = registers[instructionAnd(instruction, 25, 20)].getContents()
+
+    value = extractImmediate(instruction, 12, 7, "signed")
+
+    if rs1_val >= rs2_val:
+        PC.addToProgramCounter(value)
+
+def BLTU(instruction, registers, PC):
+    rs1_val = registers[instructionAnd(instruction, 20, 15)].getContents()
+    rs2_val = registers[instructionAnd(instruction, 25, 20)].getContents()
+
+    value = extractImmediate(instruction, 12, 7, "unsigned")
+
+    if rs1_val < rs2_val:
+        PC.addToProgramCounter(value)
+def BGEU(instruction, registers, PC):
+    rs1_val = registers[instructionAnd(instruction, 20, 15)].getContents()
+    rs2_val = registers[instructionAnd(instruction, 25, 20)].getContents()
+
+    value = extractImmediate(instruction, 12, 7, "unsigned")
+
+    if rs1_val >= rs2_val:
+        PC.addToProgramCounter(value)
 
 
 #Helper function
