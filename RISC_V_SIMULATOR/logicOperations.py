@@ -62,7 +62,6 @@ def SH(instruction, registers, memory):
     rs2_val = registers[instructionAnd(instruction, 25, 20)].getContents()
     imm_upper = extractImmediate(instruction, 32, 25, "unsigned") << 5 # upper 7 bits of the immediate
     imm_lower = extractImmediate(instruction, 12, 7, "unsigned") # lower 5 bits of the immediate
-    imm_lower = extractImmediate(instruction, 12, 7, "unsigned") # lower 5 bits of the immediate
 
     raw_imm_bin = bin(imm_upper + imm_lower)[2:]
     if len(raw_imm_bin) < 12:
@@ -75,7 +74,6 @@ def SW(instruction, registers, memory):
     rs1_val = registers[instructionAnd(instruction, 20, 15)].getContents()
     rs2_val = registers[instructionAnd(instruction, 25, 20)].getContents()
     imm_upper = extractImmediate(instruction, 32, 25, "unsigned") << 5 # upper 7 bits of the immediate
-    imm_lower = extractImmediate(instruction, 12, 7, "unsigned") # lower 5 bits of the immediate
     imm_lower = extractImmediate(instruction, 12, 7, "unsigned") # lower 5 bits of the immediate
 
     raw_imm_bin = bin(imm_upper + imm_lower)[2:]
@@ -92,7 +90,11 @@ def LUI(instruction, registers):
 
     registers[instructionAnd(instruction, 12, 7)].setContents(imm<<12)
 
-#def AUIPC(instruction, registers):
+def AUIPC(instruction, registers, PC):
+    imm = extractImmediate(instruction, 32, 12, "unsigned")
+
+    registers[instructionAnd(instruction, 12, 7)].setContents(PC + (imm<<12))
+
 
 #ARITHMATIC
 def ADD(instruction, registers):
@@ -106,7 +108,6 @@ def SUB(instruction, registers):
     rs2_val = registers[instructionAnd(instruction, 25, 20)].getContents()
 
     registers[instructionAnd(instruction, 12, 7)].setContents(rs1_val - rs2_val)
-
 
 def ADDI(instruction, registers):
     rs1_val = registers[instructionAnd(instruction, 20, 15)].getContents()
@@ -149,6 +150,7 @@ def AND(instruction, registers):
     rs2_val = registers[instructionAnd(instruction, 25, 20)].getContents()
 
     registers[instructionAnd(instruction, 12, 7)].setContents(rs1_val & rs2_val)
+
 
 #Shift operations
 def SLL(instruction, registers):
@@ -196,6 +198,8 @@ def SRA(instruction, registers):
     rs1_val >>= rs2_val
     
     registers[instructionAnd(instruction, 12, 7)].setContents(rs1_val & 0xFFFFFFFF)
+
+
 #Set operations
 def SLT(instruction, registers):
     rs1_val = registers[instructionAnd(instruction, 20, 15)].getContents()
@@ -239,59 +243,99 @@ def SLTIU(instruction, registers):
     else: 
         registers[instructionAnd(instruction, 12, 7)].setContents(0)
 
+
+# Jump instructions
+def JAL(instruction, registers, PC):
+    imm = extractImmediate(instruction, 32, 12, "signed")
+
+    registers[instructionAnd(instruction, 12, 7)].setContents(PC+4)
+    PC.addToProgramCounter(imm)
+
+def JALR(instruction, registers, PC):
+    imm = extractImmediate(instruction, 32, 12, "signed")
+
+    registers[instructionAnd(instruction, 12, 7)].setContents(PC+4)
+    PC.addToProgramCounter(imm)
+
+
 #Branch instructions
 def BEQ(instruction, registers, PC):
     rs1_val = registers[instructionAnd(instruction, 20, 15)].getContents()
     rs2_val = registers[instructionAnd(instruction, 25, 20)].getContents()
+    imm_upper = extractImmediate(instruction, 32, 25, "unsigned") << 5 # upper 7 bits of the immediate
+    imm_lower = extractImmediate(instruction, 12, 7, "unsigned") # lower 5 bits of the immediate
 
-    value = extractImmediate(instruction, 12, 7, "signed")
+    raw_imm_bin = bin(imm_upper + imm_lower)[2:]
+    if len(raw_imm_bin) < 12:
+        raw_imm_bin = "0" + raw_imm_bin
+    signed_imm = signedBinToInt(raw_imm_bin)
 
     if rs1_val == rs2_val:
-        PC.addToProgramCounter(value)
+        PC.addToProgramCounter(signed_imm)
 
 def BNE(instruction, registers, PC):
     rs1_val = registers[instructionAnd(instruction, 20, 15)].getContents()
     rs2_val = registers[instructionAnd(instruction, 25, 20)].getContents()
+    imm_upper = extractImmediate(instruction, 32, 25, "unsigned") << 5 # upper 7 bits of the immediate
+    imm_lower = extractImmediate(instruction, 12, 7, "unsigned") # lower 5 bits of the immediate
 
-    value = extractImmediate(instruction, 12, 7, "signed")
+    raw_imm_bin = bin(imm_upper + imm_lower)[2:]
+    if len(raw_imm_bin) < 12:
+        raw_imm_bin = "0" + raw_imm_bin
+    signed_imm = signedBinToInt(raw_imm_bin)
 
     if rs1_val != rs2_val:
-        PC.addToProgramCounter(value)
+        PC.addToProgramCounter(signed_imm)
 
 def BLT(instruction, registers, PC):
     rs1_val = registers[instructionAnd(instruction, 20, 15)].getContents()
     rs2_val = registers[instructionAnd(instruction, 25, 20)].getContents()
+    imm_upper = extractImmediate(instruction, 32, 25, "unsigned") << 5 # upper 7 bits of the immediate
+    imm_lower = extractImmediate(instruction, 12, 7, "unsigned") # lower 5 bits of the immediate
 
-    value = extractImmediate(instruction, 12, 7, "signed")
+    raw_imm_bin = bin(imm_upper + imm_lower)[2:]
+    if len(raw_imm_bin) < 12:
+        raw_imm_bin = "0" + raw_imm_bin
+    signed_imm = signedBinToInt(raw_imm_bin)
 
     if rs1_val < rs2_val:
-        PC.addToProgramCounter(value)
+        PC.addToProgramCounter(signed_imm)
 
 def BGE(instruction, registers, PC):
     rs1_val = registers[instructionAnd(instruction, 20, 15)].getContents()
     rs2_val = registers[instructionAnd(instruction, 25, 20)].getContents()
+    imm_upper = extractImmediate(instruction, 32, 25, "unsigned") << 5 # upper 7 bits of the immediate
+    imm_lower = extractImmediate(instruction, 12, 7, "unsigned") # lower 5 bits of the immediate
 
-    value = extractImmediate(instruction, 12, 7, "signed")
+    raw_imm_bin = bin(imm_upper + imm_lower)[2:]
+    if len(raw_imm_bin) < 12:
+        raw_imm_bin = "0" + raw_imm_bin
+    signed_imm = signedBinToInt(raw_imm_bin)
 
     if rs1_val >= rs2_val:
-        PC.addToProgramCounter(value)
+        PC.addToProgramCounter(signed_imm)
 
 def BLTU(instruction, registers, PC):
     rs1_val = registers[instructionAnd(instruction, 20, 15)].getContents()
     rs2_val = registers[instructionAnd(instruction, 25, 20)].getContents()
-
-    value = extractImmediate(instruction, 12, 7, "unsigned")
+    imm_upper = extractImmediate(instruction, 32, 25, "unsigned") << 5 # upper 7 bits of the immediate
+    imm_lower = extractImmediate(instruction, 12, 7, "unsigned") # lower 5 bits of the immediate
+    
+    imm = imm_upper + imm_lower
 
     if rs1_val < rs2_val:
-        PC.addToProgramCounter(value)
+        PC.addToProgramCounter(imm)
+
 def BGEU(instruction, registers, PC):
     rs1_val = registers[instructionAnd(instruction, 20, 15)].getContents()
     rs2_val = registers[instructionAnd(instruction, 25, 20)].getContents()
-
-    value = extractImmediate(instruction, 12, 7, "unsigned")
+    imm_upper = extractImmediate(instruction, 32, 25, "unsigned") << 5 # upper 7 bits of the immediate
+    imm_lower = extractImmediate(instruction, 12, 7, "unsigned") # lower 5 bits of the immediate
+    
+    imm = imm_upper + imm_lower
 
     if rs1_val >= rs2_val:
-        PC.addToProgramCounter(value)
+        PC.addToProgramCounter(imm)
 
 
 #Helper function

@@ -7,12 +7,12 @@ from runCode import *
 def Y_or_N():
     while True:
         print("Y or N?")
-        user_input = input()
-        if user_input == "Y":
+        user_input = (input()).lower()
+        if user_input == "y":
             return True
-        elif user_input == "N":
+        elif user_input == "n":
             return False
-        print("It has to be either a Y or a N")
+        # print("It has to be either a Y or a N")
 
 while True:
     print("Welcome to our RISC-V simulator")
@@ -22,9 +22,10 @@ while True:
     answer = Y_or_N()
     if answer == True:
         print("Choose a task folder for the test please, it has to be a number between 1 and 4:")
-        answer = input()
-        if answer == "1" or answer == "2" or answer == "3" or answer == "4":
-            base_path = os.path.join("RISC_V_SIMULATOR", "tests", "task" + str(answer), "*.bin")
+        task_folder = input()
+        print("answer is: " + task_folder)
+        if task_folder == "1" or task_folder == "2" or task_folder == "3" or task_folder == "4":
+            base_path = os.path.join("RISC_V_SIMULATOR", "tests", "task" + str(task_folder), "*.bin")
         else: 
             print("That is not a number between 1 and 4")
             break
@@ -36,7 +37,7 @@ while True:
             for filename in glob.glob(base_path):
                 print(f"{filename}")
             print("Write the name of the file you would like to be run, just write the name between the \\ and .bin")
-            answer = "RISC_V_SIMULATOR\\tests\\task1\\" + input() +".bin"
+            answer = "RISC_V_SIMULATOR\\tests\\task" + task_folder + "\\" + input() +".bin"
             print("Running file: " + str(answer))
             run_code(answer)
         else: 
