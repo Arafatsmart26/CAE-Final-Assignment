@@ -50,10 +50,11 @@ def SB(instruction, registers, memory):
     imm_upper = extractImmediate(instruction, 32, 25, "unsigned") << 5 # upper 7 bits of the immediate
     imm_lower = extractImmediate(instruction, 12, 7, "unsigned") # lower 5 bits of the immediate
 
-    raw_imm_bin = bin(imm_upper + imm_lower)[2:]
-    if len(raw_imm_bin) < 12:
-        raw_imm_bin = "0" + raw_imm_bin
-    signed_imm = signedBinToInt(raw_imm_bin)
+    # raw_imm_bin = bin(imm_upper + imm_lower)[2:]
+    # if len(raw_imm_bin) < 12:
+    #     raw_imm_bin = "0" + raw_imm_bin
+    # signed_imm = signedBinToInt(raw_imm_bin)
+    signed_imm = extractedBinIntToSignedInt(imm_upper + imm_lower, 12)
 
     memStore(memory, (rs1_val + signed_imm), rs2_val, 1)
 
@@ -63,10 +64,11 @@ def SH(instruction, registers, memory):
     imm_upper = extractImmediate(instruction, 32, 25, "unsigned") << 5 # upper 7 bits of the immediate
     imm_lower = extractImmediate(instruction, 12, 7, "unsigned") # lower 5 bits of the immediate
 
-    raw_imm_bin = bin(imm_upper + imm_lower)[2:]
-    if len(raw_imm_bin) < 12:
-        raw_imm_bin = "0" + raw_imm_bin
-    signed_imm = signedBinToInt(raw_imm_bin)
+    # raw_imm_bin = bin(imm_upper + imm_lower)[2:]
+    # if len(raw_imm_bin) < 12:
+    #     raw_imm_bin = "0" + raw_imm_bin
+    # signed_imm = signedBinToInt(raw_imm_bin)
+    signed_imm = extractedBinIntToSignedInt(imm_upper + imm_lower, 12)
 
     memStore(memory, (rs1_val + signed_imm), rs2_val, 2)
 
@@ -76,10 +78,11 @@ def SW(instruction, registers, memory):
     imm_upper = extractImmediate(instruction, 32, 25, "unsigned") << 5 # upper 7 bits of the immediate
     imm_lower = extractImmediate(instruction, 12, 7, "unsigned") # lower 5 bits of the immediate
 
-    raw_imm_bin = bin(imm_upper + imm_lower)[2:]
-    if len(raw_imm_bin) < 12:
-        raw_imm_bin = "0" + raw_imm_bin
-    signed_imm = signedBinToInt(raw_imm_bin)
+    # raw_imm_bin = bin(imm_upper + imm_lower)[2:]
+    # if len(raw_imm_bin) < 12:
+    #     raw_imm_bin = "0" + raw_imm_bin
+    # signed_imm = signedBinToInt(raw_imm_bin)
+    signed_imm = extractedBinIntToSignedInt(imm_upper + imm_lower, 12)
 
     memStore(memory, (rs1_val + signed_imm), rs2_val, 4)
 
@@ -113,7 +116,12 @@ def ADDI(instruction, registers):
     rs1_val = registers[instructionAnd(instruction, 20, 15)].getContents()
     imm = extractImmediate(instruction, 32, 20, "signed")
 
+    # print("rd: " + str(instructionAnd(instruction, 12, 7)))
+    # print("rs1_val: " + str(rs1_val))
+    # print("imm: " + str(imm))
+
     registers[instructionAnd(instruction, 12, 7)].setContents(rs1_val + imm)
+    # print("after addi: " + str(registers[instructionAnd(instruction, 12, 7)].getContents()))
 
 def XORI(instruction, registers):
     rs1_val = registers[instructionAnd(instruction, 20, 15)].getContents()
@@ -262,86 +270,159 @@ def JALR(instruction, registers, PC):
 def BEQ(instruction, registers, PC):
     rs1_val = registers[instructionAnd(instruction, 20, 15)].getContents()
     rs2_val = registers[instructionAnd(instruction, 25, 20)].getContents()
-    imm_upper = extractImmediate(instruction, 32, 25, "unsigned") << 5 # upper 7 bits of the immediate
-    imm_lower = extractImmediate(instruction, 12, 7, "unsigned") # lower 5 bits of the immediate
+    # imm_upper = extractImmediate(instruction, 32, 25, "unsigned") << 5 # upper 7 bits of the immediate
+    # imm_lower = extractImmediate(instruction, 12, 7, "unsigned") # lower 5 bits of the immediate
+    # raw_imm_bin = bin(extractBranchImmediate(instruction))[2:]
 
-    raw_imm_bin = bin(imm_upper + imm_lower)[2:]
-    if len(raw_imm_bin) < 12:
-        raw_imm_bin = "0" + raw_imm_bin
-    signed_imm = signedBinToInt(raw_imm_bin)
+    # # raw_imm_bin = bin(imm_upper + imm_lower)[2:]
+    # if len(raw_imm_bin) < 13:
+    #     raw_imm_bin = "0" + raw_imm_bin
+    # signed_imm = signedBinToInt(raw_imm_bin)
+    signed_imm = extractedBinIntToSignedInt(extractBranchImmediate(instruction), 13)
+
+    # print("20 15: " + format(instructionAnd(instruction, 20, 15), '05b'))
+    # print("25 20: " + format(instructionAnd(instruction, 25, 20), '05b'))
+    # print("rs1_val: " + str(rs1_val))
+    # print("rs2_val: " + str(rs2_val))
+    # print("signed_imm: " + str(signed_imm))
 
     if rs1_val == rs2_val:
-        PC.addToProgramCounter(signed_imm)
+        # print("Branching from BEQ!")
+        # print("PC before: " + str(PC.getInstructionCounter()))
+        PC.addToProgramCounter(int(signed_imm / 4) - 1)
+        # print("PC after: " + str(PC.getInstructionCounter()))
 
 def BNE(instruction, registers, PC):
     rs1_val = registers[instructionAnd(instruction, 20, 15)].getContents()
     rs2_val = registers[instructionAnd(instruction, 25, 20)].getContents()
-    imm_upper = extractImmediate(instruction, 32, 25, "unsigned") << 5 # upper 7 bits of the immediate
-    imm_lower = extractImmediate(instruction, 12, 7, "unsigned") # lower 5 bits of the immediate
+    # imm_upper = extractImmediate(instruction, 32, 25, "unsigned") << 5 # upper 7 bits of the immediate
+    # imm_lower = extractImmediate(instruction, 12, 7, "unsigned") # lower 5 bits of the immediate
+    # raw_imm_bin = bin(extractBranchImmediate(instruction))[2:]
 
-    raw_imm_bin = bin(imm_upper + imm_lower)[2:]
-    if len(raw_imm_bin) < 12:
-        raw_imm_bin = "0" + raw_imm_bin
-    signed_imm = signedBinToInt(raw_imm_bin)
+    # # raw_imm_bin = bin(imm_upper + imm_lower)[2:]
+    # if len(raw_imm_bin) < 13:
+    #     raw_imm_bin = "0" + raw_imm_bin
+    # signed_imm = signedBinToInt(raw_imm_bin)
+    signed_imm = extractedBinIntToSignedInt(extractBranchImmediate(instruction), 13)
+
+    # print("20 15: " + str(instructionAnd(instruction, 20, 15)))
+    # print("25 20: " + str(instructionAnd(instruction, 25, 20)))
+    # print("rs1_val: " + str(rs1_val))
+    # print("rs2_val: " + str(rs2_val))
+    # print("signed_imm: " + str(signed_imm))
 
     if rs1_val != rs2_val:
-        PC.addToProgramCounter(signed_imm)
+        # print("Branching from BNE!")
+        # print("PC before: " + str(PC.getInstructionCounter()))
+        PC.addToProgramCounter(int(signed_imm / 4) - 1)
+        # print("PC after: " + str(PC.getInstructionCounter()))
 
 def BLT(instruction, registers, PC):
     rs1_val = registers[instructionAnd(instruction, 20, 15)].getContents()
     rs2_val = registers[instructionAnd(instruction, 25, 20)].getContents()
-    imm_upper = extractImmediate(instruction, 32, 25, "unsigned") << 5 # upper 7 bits of the immediate
-    imm_lower = extractImmediate(instruction, 12, 7, "unsigned") # lower 5 bits of the immediate
+    # imm_upper = extractImmediate(instruction, 32, 25, "unsigned") << 5 # upper 7 bits of the immediate
+    # imm_lower = extractImmediate(instruction, 12, 7, "unsigned") # lower 5 bits of the immediate
+    # raw_imm_bin = bin(extractBranchImmediate(instruction))[2:]
 
-    raw_imm_bin = bin(imm_upper + imm_lower)[2:]
-    if len(raw_imm_bin) < 12:
-        raw_imm_bin = "0" + raw_imm_bin
-    signed_imm = signedBinToInt(raw_imm_bin)
+    # # raw_imm_bin = bin(imm_upper + imm_lower)[2:]
+    # if len(raw_imm_bin) < 13:
+    #     raw_imm_bin = "0" + raw_imm_bin
+    # signed_imm = signedBinToInt(raw_imm_bin)
+    signed_imm = extractedBinIntToSignedInt(extractBranchImmediate(instruction), 13)
+
+    # print("20 15: " + format(instructionAnd(instruction, 20, 15), '05b'))
+    # print("25 20: " + format(instructionAnd(instruction, 25, 20), '05b'))
+    # print("rs1_val: " + str(rs1_val))
+    # print("rs2_val: " + str(rs2_val))
+    # print("signed_imm: " + str(signed_imm))
 
     if rs1_val < rs2_val:
-        PC.addToProgramCounter(signed_imm)
+        # print("Branching from BLT!")
+        # print("PC before: " + str(PC.getInstructionCounter()))
+        PC.addToProgramCounter(int(signed_imm / 4) - 1)
+        # print("PC after: " + str(PC.getInstructionCounter()))
 
 def BGE(instruction, registers, PC):
     rs1_val = registers[instructionAnd(instruction, 20, 15)].getContents()
     rs2_val = registers[instructionAnd(instruction, 25, 20)].getContents()
-    imm_upper = extractImmediate(instruction, 32, 25, "unsigned") << 5 # upper 7 bits of the immediate
-    imm_lower = extractImmediate(instruction, 12, 7, "unsigned") # lower 5 bits of the immediate
+    # imm_upper = extractImmediate(instruction, 32, 25, "unsigned") << 5 # upper 7 bits of the immediate
+    # imm_lower = extractImmediate(instruction, 12, 7, "unsigned") # lower 5 bits of the immediate
+    # raw_imm_bin = bin(extractBranchImmediate(instruction))[2:]
 
-    raw_imm_bin = bin(imm_upper + imm_lower)[2:]
-    if len(raw_imm_bin) < 12:
-        raw_imm_bin = "0" + raw_imm_bin
-    signed_imm = signedBinToInt(raw_imm_bin)
+    # # raw_imm_bin = bin(imm_upper + imm_lower)[2:]
+    # if len(raw_imm_bin) < 13:
+    #     raw_imm_bin = "0" + raw_imm_bin
+    # signed_imm = signedBinToInt(raw_imm_bin)
+    signed_imm = extractedBinIntToSignedInt(extractBranchImmediate(instruction), 13)
+
+    # print("20 15: " + format(instructionAnd(instruction, 20, 15), '05b'))
+    # print("25 20: " + format(instructionAnd(instruction, 25, 20), '05b'))
+    # print("rs1_val: " + str(rs1_val))
+    # print("rs2_val: " + str(rs2_val))
+    # print("signed_imm: " + str(signed_imm))
 
     if rs1_val >= rs2_val:
-        PC.addToProgramCounter(signed_imm)
+        # print("Branching from BGE!")
+        # print("PC before: " + str(PC.getInstructionCounter()))
+        PC.addToProgramCounter(int(signed_imm / 4) - 1)
+        # print("PC after: " + str(PC.getInstructionCounter()))
 
 def BLTU(instruction, registers, PC):
     rs1_val = registers[instructionAnd(instruction, 20, 15)].getContents()
     rs2_val = registers[instructionAnd(instruction, 25, 20)].getContents()
-    imm_upper = extractImmediate(instruction, 32, 25, "unsigned") << 5 # upper 7 bits of the immediate
-    imm_lower = extractImmediate(instruction, 12, 7, "unsigned") # lower 5 bits of the immediate
-    
-    imm = imm_upper + imm_lower
+    # imm_upper = extractImmediate(instruction, 32, 25, "unsigned") << 5 # upper 7 bits of the immediate
+    # imm_lower = extractImmediate(instruction, 12, 7, "unsigned") # lower 5 bits of the immediate
+    raw_imm_bin = extractBranchImmediate(instruction)
+
+    rs1_val = readAsUnsigned(rs1_val)
+    rs2_val = readAsUnsigned(rs2_val)
+
+    # raw_imm_bin = bin(imm_upper + imm_lower)[2:]
+
+    # print("20 15: " + format(instructionAnd(instruction, 20, 15), '05b'))
+    # print("25 20: " + format(instructionAnd(instruction, 25, 20), '05b'))
+    # print("rs1_val: " + str(rs1_val))
+    # print("rs2_val: " + str(rs2_val))
+    # print("raw_imm_bin: " + str(raw_imm_bin))
 
     if rs1_val < rs2_val:
-        PC.addToProgramCounter(imm)
+        # print("Branching from BLTU!")
+        # print("PC before: " + str(PC.getInstructionCounter()))
+        PC.addToProgramCounter(int(raw_imm_bin / 4) - 1)
+        # print("PC after: " + str(PC.getInstructionCounter()))
 
 def BGEU(instruction, registers, PC):
     rs1_val = registers[instructionAnd(instruction, 20, 15)].getContents()
     rs2_val = registers[instructionAnd(instruction, 25, 20)].getContents()
-    imm_upper = extractImmediate(instruction, 32, 25, "unsigned") << 5 # upper 7 bits of the immediate
-    imm_lower = extractImmediate(instruction, 12, 7, "unsigned") # lower 5 bits of the immediate
-    
-    imm = imm_upper + imm_lower
+    # imm_upper = extractImmediate(instruction, 32, 25, "unsigned") << 5 # upper 7 bits of the immediate
+    # imm_lower = extractImmediate(instruction, 12, 7, "unsigned") # lower 5 bits of the immediate
+    raw_imm_bin = extractBranchImmediate(instruction)
+
+    rs1_val = readAsUnsigned(rs1_val)
+    rs2_val = readAsUnsigned(rs2_val)
+
+    # raw_imm_bin = bin(imm_upper + imm_lower)[2:]
+
+    # print("20 15: " + format(instructionAnd(instruction, 20, 15), '05b'))
+    # print("25 20: " + format(instructionAnd(instruction, 25, 20), '05b'))
+    # print("rs1_val: " + str(rs1_val))
+    # print("rs2_val: " + str(rs2_val))
+    # print("raw_imm_bin: " + str(raw_imm_bin))
 
     if rs1_val >= rs2_val:
-        PC.addToProgramCounter(imm)
+        # print("Branching from BGEU!")
+        # print("PC before: " + str(PC.getInstructionCounter()))
+        PC.addToProgramCounter(int(raw_imm_bin / 4) - 1)
+        # print("PC after: " + str(PC.getInstructionCounter()))
 
 
 #Helper function
 def instructionAnd(instruction, upperBound, lowerBound, bit_width = 32) -> int:
     mask = (1 << bit_width) - 1
     instruction &= mask  # limit to 'bit_width' bits
+    # if instruction == int("00000010011000101000001001100011", 2):
+    #     print("printing! " + format(instruction, '032b'))
+    #     print("extract: " + format((instruction & (2**upperBound-2**lowerBound))>>lowerBound, '032b'))
     return (instruction & (2**upperBound-2**lowerBound))>>lowerBound
 
 def extractImmediate(instruction, upperBound, lowerBound, immSign: str, bit_width = 32) -> int:
@@ -363,7 +444,30 @@ def extractImmediate(instruction, upperBound, lowerBound, immSign: str, bit_widt
             return signedBinToInt(binImm)
         case "unsigned":
             return int(binImm, 2)
-            
+
+# function from ChatGPT to extract immediate specifically from a branch operation
+def extractBranchImmediate(instruction) -> int:
+    imm12   = (instruction >> 31) & 0x1  # imm[12]
+    imm11   = (instruction >> 7)  & 0x1  # imm[11]
+    imm10_5 = (instruction >> 25) & 0x3F # imm[10:5]
+    imm4_1  = (instruction >> 8)  & 0xF  # imm[4:1]
+
+    # print("imm12: " + format(imm12, '01b'))
+    # print("imm11: " + format(imm11, '01b'))
+    # print("imm10_5: " + format(imm10_5, '06b'))
+    # print("imm4_1: " + format(imm4_1, '05b'))
+
+    # imm = (imm12 << 12) | (imm11 << 11) | (imm10_5 << 5) | (imm4_1 << 1)
+
+    # print("full imm: " + format((imm12 << 12) | (imm11 << 11) | (imm10_5 << 5) | (imm4_1 << 1), '013b'))
+
+    return (imm12 << 12) | (imm11 << 11) | (imm10_5 << 5) | (imm4_1 << 1)
+
+    # if imm & (1 << 12):
+    #     imm -= 1 << 13   # subtract 2^13
+
+    # return imm
+
 
 # stores given number of bytes in memory, starting at given address
 def memStore(mem, address: int, value: int, numBytes: int):
@@ -407,11 +511,11 @@ def getAddressIndex(mem, address: int) -> int:
 #     return integer & (-1>>32)
 
 # function from ChatGPT for converting regular ints to what they would be if Python had signed ints
-def int32_toSigned(n: int) -> int:
-    n &= 0xFFFFFFFF  # Keep only 32 bits
-    if n & 0x80000000:
-        return n - 0x100000000
-    return n
+# def int32_toSigned(n: int) -> int:
+#     n &= 0xFFFFFFFF  # Keep only 32 bits
+#     if n & 0x80000000:
+#         return n - 0x100000000
+#     return n
 
 # function from ChatGPT to convert signed bit string to its equivalent signed int value
 # (e.g., the signed binary string, "11111110", would return "-2", while "011111110" would instead return "254")
@@ -423,6 +527,24 @@ def signedBinToInt(b: str) -> int:
         value -= 1 << bits         # subtract 2^bits
 
     return value
+
+def extractedBinIntToSignedInt(int_val: int, max_len: int) -> int:
+    raw_bin = bin(int_val)[2:]
+    if len(raw_bin) < max_len:
+        raw_bin = "0" + raw_bin
+    return signedBinToInt(raw_bin)
+
+def readAsUnsigned(val: int) -> int:
+    if val < 0:
+        val *= -1 # remove the Python-way of signing values (the minus-sign in front of values
+        val_bin = "1" + bin(val)[2:] # add the normal way of signing values (a sign-bit as the most significant bit)
+        return int(val_bin, 2)
+    else:
+        return val # if value was positive, nothing needs to be done, just return the value directly
+
+# function taken from StackOverflow to convert signed int to corresponding two's-complement hex value
+def signedIntToHex(val, nbits):
+    return hex((val + (1 << nbits)) % (1 << nbits))
 
 # ---- DOESN'T WORK RIGHT NOW, IT SEEMS ----
 # def signed32(b: str) -> int:

@@ -1,9 +1,9 @@
 from logicOperations import *
 from Registers import *
 from Program_Counter import *
-registers=Initialize()
-memory = []
-def Interpreter(instruction, program_counter):
+
+def Interpreter(instruction, registers, memory, program_counter):
+    # print("instruction: " + format(instruction, '032b'))
     program_counter = program_counter
     opcode = instructionAnd(instruction, 7, 0) #We take the last 7 bits which is the opcode. Python includes the lower bound but excludes the upper
     funct3 = instructionAnd(instruction, 15, 12) #Not all instructions have a funct3 or funct7 field but we define it here as it is always the same place
@@ -146,9 +146,8 @@ def Interpreter(instruction, program_counter):
             #ECall method
             print("ECall")
 
-
-def getRegisters():
-    return registers
+    if registers[0].getContents() != 0:
+        registers[0].setContents(0)
         
 
 

@@ -12,7 +12,7 @@ def Y_or_N():
             return True
         elif user_input == "n":
             return False
-        # print("It has to be either a Y or a N")
+        print("It has to be either a Y or a N")
 
 while True:
     print("Welcome to our RISC-V simulator")
