@@ -3,7 +3,6 @@ from Registers import *
 from Program_Counter import *
 
 def Interpreter(instruction, registers, memory, program_counter):
-    # print("instruction: " + format(instruction, '032b'))
     program_counter = program_counter
     opcode = instructionAnd(instruction, 7, 0) #We take the last 7 bits which is the opcode. Python includes the lower bound but excludes the upper
     funct3 = instructionAnd(instruction, 15, 12) #Not all instructions have a funct3 or funct7 field but we define it here as it is always the same place
@@ -13,6 +12,7 @@ def Interpreter(instruction, registers, memory, program_counter):
             match opcode:
                 case 23: #AUIPC
                     print("AUIPC")
+                    AUIPC(instruction, registers, program_counter)
                 case 19: #Logic immeadiate operations
                     match funct3:
                         case 0: #ADDI
@@ -43,7 +43,7 @@ def Interpreter(instruction, registers, memory, program_counter):
                                     SRLI(instruction, registers)
                                 case 32: #SRAI
                                     print("SRAI")
-                                    SRAI(instruction, registers)#Doesn't work
+                                    SRAI(instruction, registers)
         
         case 3:
             match opcode:
@@ -79,7 +79,7 @@ def Interpreter(instruction, registers, memory, program_counter):
                                     SRL(instruction, registers)
                                 case 32: #SRA
                                     print("SRA")
-                                    SRA(instruction, registers)#Doesn't work
+                                    SRA(instruction, registers)
                         case 6: #OR
                             print("OR")
                             OR(instruction, registers)
@@ -146,6 +146,7 @@ def Interpreter(instruction, registers, memory, program_counter):
             #ECall method
             print("ECall")
 
+    # after every instruction, verify that x0 is '0'. If not, make it so.
     if registers[0].getContents() != 0:
         registers[0].setContents(0)
         
