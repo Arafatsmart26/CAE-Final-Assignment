@@ -25,7 +25,7 @@ while True:
         task_folder = input()
         print("answer is: " + task_folder)
         if task_folder == "1" or task_folder == "2" or task_folder == "3" or task_folder == "4":
-            base_path = os.path.join("RISC_V_SIMULATOR", "tests", "task" + str(task_folder), "*.bin")
+            base_path = os.path.join("tests", "task" + str(task_folder), "*.bin")
         else: 
             print("That is not a number between 1 and 4")
             break
@@ -37,7 +37,7 @@ while True:
             for filename in glob.glob(base_path):
                 print(f"{filename}")
             print("Write the name of the file you would like to be run, just write the name between the \\ and .bin")
-            answer = "RISC_V_SIMULATOR\\tests\\task" + task_folder + "\\" + input() +".bin"
+            answer = os.path.join("tests", f"task{task_folder}", input() + ".bin" )
             print("Running file: " + str(answer))
             run_code(answer)
         else: 

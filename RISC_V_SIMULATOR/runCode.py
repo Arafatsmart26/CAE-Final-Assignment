@@ -20,8 +20,8 @@ def run_code(filename):
         signed_reg_val = signedIntToHex(i.getContents(), 32) # convert the signed int in the register to two's-complement hex value
         print("Register_" + str(j) + " " + format(int(signed_reg_val, 16), '#010x')) # ugly print for printing 8 bytes in hex
         j += 1
-    with open("output.res", "wb") as f:
+    with open("output.res", "w") as f:
         j = 0
         for i in registers:
-            f.write("0x" + j + " " + str(signedIntToHex(i.getContents(), 32)))
+            f.write("x" + str(j) + " " + "0x" + signedIntToHex(i.getContents(), 32) + "\n")
             j += 1
