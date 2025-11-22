@@ -23,5 +23,6 @@ def run_code(filename):
     with open("output.res", "w") as f:
         j = 0
         for i in registers:
-            f.write("x" + str(j) + " " + "0x" + signedIntToHex(i.getContents(), 32) + "\n")
+            f.write("x" + str(j) + " " + signedIntToHex(i.getContents(), 32) + "\n")
             j += 1
+            f.close
