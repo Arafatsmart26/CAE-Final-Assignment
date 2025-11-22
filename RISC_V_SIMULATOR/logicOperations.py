@@ -84,7 +84,7 @@ def LUI(instruction, registers):
 def AUIPC(instruction, registers, PC):
     imm = extractImmediate(instruction, 32, 12, "unsigned")
 
-    registers[instructionAnd(instruction, 12, 7)].setContents(PC + (imm<<12))
+    registers[instructionAnd(instruction, 12, 7)].setContents(PC.getInstructionCounter() + (imm<<12))
 
 
 #ARITHMATIC
