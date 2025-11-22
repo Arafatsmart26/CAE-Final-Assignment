@@ -17,15 +17,17 @@ def Y_or_N():
 while True:
     print("Welcome to our RISC-V simulator")
     print("This program runs on python and takes a binary file of RISV-V instructions based on the RV32I base instruction set")
-    print("The program runs on the path RISC_V_SIMULATOR\\tests")
+    print("The program runs in the folder 'RISC_V_SIMULATOR'")
     print("Do you wish to run a test?")
     answer = Y_or_N()
     if answer == True:
+        dir_name = ""
         print("Choose a task folder for the test please, it has to be a number between 1 and 4:")
         task_folder = input()
         print("answer is: " + task_folder)
         if task_folder == "1" or task_folder == "2" or task_folder == "3" or task_folder == "4":
-            base_path = os.path.join("tests", "task" + str(task_folder), "*.bin")
+            dir_name = os.path.dirname(__file__)
+            base_path = os.path.join(dir_name + "\\tests", "task" + str(task_folder), "*.bin")
         else: 
             print("That is not a number between 1 and 4")
             break
@@ -37,7 +39,7 @@ while True:
             for filename in glob.glob(base_path):
                 print(f"{filename}")
             print("Write the name of the file you would like to be run, just write the name between the \\ and .bin")
-            answer = os.path.join("tests", f"task{task_folder}", input() + ".bin" )
+            answer = os.path.join(dir_name + "\\tests", f"task{task_folder}", input() + ".bin" )
             print("Running file: " + str(answer))
             run_code(answer)
         else: 
