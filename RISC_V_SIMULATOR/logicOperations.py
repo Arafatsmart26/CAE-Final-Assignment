@@ -309,7 +309,7 @@ def BGEU(instruction, registers, PC):
         PC.addToProgramCounter(int(raw_imm_bin / 4) - 1)
 
 
-#Helper function
+#Helper functions
 def instructionAnd(instruction, upperBound, lowerBound, bit_width = 32) -> int:
     mask = (1 << bit_width) - 1
     instruction &= mask  # limit to 'bit_width' bits
@@ -318,7 +318,7 @@ def instructionAnd(instruction, upperBound, lowerBound, bit_width = 32) -> int:
 def extractImmediate(instruction, upperBound, lowerBound, immSign: str, bit_width = 32) -> int:
     """
     Bounds for extraction are: [lowerBound, upperBound[, i.e. lowerBound-bit is included, while upperBound-bit is NOT included.
-    binType:
+    immSign:
     "signed" = the immediate should be handled as a signed immediate
     "unsigned" = the immediate should be handled as an unsigned immediate
     """
