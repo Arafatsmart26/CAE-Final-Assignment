@@ -147,20 +147,21 @@ def AND(instruction, registers):
 def SLL(instruction, registers):
     rs1_val = registers[instructionAnd(instruction, 20, 15)].getContents()
     rs2_val = registers[instructionAnd(instruction, 25, 20)].getContents()
+    
 
-    registers[instructionAnd(instruction, 12, 7)].setContents(rs1_val << rs2_val)
+    registers[instructionAnd(instruction, 12, 7)].setContents((rs1_val << rs2_val) & 0xFFFFFFFF)
 
 def SLLI(instruction, registers):
     rs1_val = registers[instructionAnd(instruction, 20, 15)].getContents()
     imm = extractImmediate(instruction, 32, 20, "unsigned")
 
-    registers[instructionAnd(instruction, 12, 7)].setContents(rs1_val << imm)
+    registers[instructionAnd(instruction, 12, 7)].setContents((rs1_val << imm) & 0xFFFFFFFF)
 
 def SRLI(instruction, registers):
     rs1_val = registers[instructionAnd(instruction, 20, 15)].getContents()
     imm = extractImmediate(instruction, 32, 20, "unsigned")
 
-    registers[instructionAnd(instruction, 12, 7)].setContents(rs1_val >> imm)
+    registers[instructionAnd(instruction, 12, 7)].setContents((rs1_val >> imm) & 0xFFFFFFFF)
 
 def SRAI(instruction, registers):
     rs1_val = registers[instructionAnd(instruction, 20, 15)].getContents()
@@ -177,7 +178,7 @@ def SRL(instruction, registers):
     rs1_val = registers[instructionAnd(instruction, 20, 15)].getContents()
     rs2_val = registers[instructionAnd(instruction, 25, 20)].getContents()
 
-    registers[instructionAnd(instruction, 12, 7)].setContents(rs1_val >> rs2_val)
+    registers[instructionAnd(instruction, 12, 7)].setContents((rs1_val >> rs2_val) & 0xFFFFFFFF)
 
 def SRA(instruction, registers):
     rs1_val = registers[instructionAnd(instruction, 20, 15)].getContents()
