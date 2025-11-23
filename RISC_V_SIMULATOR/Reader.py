@@ -1,5 +1,3 @@
-from Interpreter import *
-from Registers import *
 def Reader(filename):
     size = 4 #Defines how many bytes we will read at a time. 
     instructions = [] #We initializa the array that will hold our instructions

@@ -1,5 +1,3 @@
-from Interpreter import *
-
 class PC:
     def __init__(self, instructions = [], counter = 0):
         self.instructions = instructions
