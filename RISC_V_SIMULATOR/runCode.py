@@ -23,7 +23,6 @@ def run_code(filename):
     with open("output.res", "wb") as f:
         j = 0
         for i in registers:
-            print("0x" + str(j) + " " + hex(i.getContents()))
             f.write(i.getContents().to_bytes(4, "little"))
             j += 1
             f.close
