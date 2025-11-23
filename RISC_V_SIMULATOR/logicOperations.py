@@ -147,8 +147,13 @@ def AND(instruction, registers):
 def SLL(instruction, registers):
     rs1_val = registers[instructionAnd(instruction, 20, 15)].getContents()
     rs2_val = registers[instructionAnd(instruction, 25, 20)].getContents()
+    print("debug mode")
+    print(bin(rs1_val))
+    print(bin(rs2_val))
 
-    registers[instructionAnd(instruction, 12, 7)].setContents(rs1_val << rs2_val)
+    result = rs1_val << rs2_val
+    print(bin(result))
+    registers[instructionAnd(instruction, 12, 7)].setContents(result)
 
 def SLLI(instruction, registers):
     rs1_val = registers[instructionAnd(instruction, 20, 15)].getContents()

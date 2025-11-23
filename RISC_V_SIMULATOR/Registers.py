@@ -3,7 +3,7 @@ class Register:
         self.contents=contents
 
     def setContents(self, contents):
-        self.contents = contents
+        self.contents = contents & 0xFFFFFFFF
 
     def getContents(self):
         return self.contents
