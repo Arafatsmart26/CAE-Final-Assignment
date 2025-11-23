@@ -23,6 +23,9 @@ def run_code(filename):
     with open("output.res", "wb") as f:
         j = 0
         for i in registers:
-            f.write(i.getContents().to_bytes(4, "little"))
-            j += 1
+            if i.getContents() >= 0:
+                f.write(i.getContents().to_bytes(4, "little"))
+                j += 1
+            else:
+                f.write(i.getContents().to_bytes(4, "little", signed = True))
             f.close

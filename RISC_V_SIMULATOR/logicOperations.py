@@ -309,6 +309,9 @@ def BGEU(instruction, registers, PC):
     if rs1_val >= rs2_val:
         PC.addToProgramCounter(int(raw_imm_bin / 4) - 1)
 
+def ECALL(PC):
+    PC.addToProgramCounter(PC.getMaxInstruction())
+
 
 #Helper functions
 def instructionAnd(instruction, upperBound, lowerBound, bit_width = 32) -> int:
