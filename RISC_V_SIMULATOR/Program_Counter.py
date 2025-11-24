@@ -3,8 +3,10 @@ class PC:
         self.instructions = instructions
         self.counter = counter
         self.counter_max = len(instructions)
+
     def nextInstruction(self):
         self.counter +=1
+    
     def jumpInstruction(self, instruction_index):
         self.counter = instruction_index
     

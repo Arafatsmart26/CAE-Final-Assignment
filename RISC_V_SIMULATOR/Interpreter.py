@@ -147,7 +147,7 @@ def Interpreter(instruction, registers, memory, program_counter):
         case 7:
             #ECall method
             print("ECall")
-            ECALL(program_counter)
+            ECALL(registers, program_counter)
 
     # after every instruction, verify that x0 is '0'. If not, make it so.
     if registers[0].getContents() != 0:

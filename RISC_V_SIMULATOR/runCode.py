@@ -21,7 +21,6 @@ def run_code(filename):
         print("Register_" + str(j) + " " + format(int(signed_reg_val, 16), '#010x')) # ugly print for printing 8 bytes in hex
         j += 1
     with open("output.res", "wb") as f:
-        j = 0
         for i in registers:
             f.write((i.getContents() & 0xFFFFFFFF).to_bytes(4, "little"))
-            j += 1
+    

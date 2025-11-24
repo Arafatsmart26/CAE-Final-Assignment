@@ -9,5 +9,4 @@ def Reader(filename):
                 break
             chunk = chunk[::-1]
             instructions.append(int(chunk.hex(),scale)) #We convert the hexcode to binary, remove the prefix and fills in extra bits if needed
-
     return instructions
