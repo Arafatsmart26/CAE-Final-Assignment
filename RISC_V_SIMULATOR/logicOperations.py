@@ -1,6 +1,4 @@
 from Memories import *
-scale=2
-
 #LOAD AND STORE
 def LB(instruction, registers, memory):
     rs1_val = registers[instructionAnd(instruction, 20, 15)].getContents()
