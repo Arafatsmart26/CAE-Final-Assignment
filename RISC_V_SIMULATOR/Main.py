@@ -3,7 +3,7 @@ import os
 from runCode import *
 #Please run this code, in the demo
 
-def Y_or_N():
+def Y_or_N():# Little function to take user input in yes or no format
     while True:
         print("Y or N?")
         user_input = (input()).lower()
@@ -13,7 +13,7 @@ def Y_or_N():
             return False
         print("It has to be either a Y or a N")
 
-while True:
+while True: # This code runs our CLI
     print("Welcome to our RISC-V simulator")
     print("This program runs on python and takes a binary file of RISV-V instructions based on the RV32I base instruction set")
     print("The program runs in the folder 'RISC_V_SIMULATOR'")
@@ -26,7 +26,7 @@ while True:
         print("answer is: " + task_folder)
         if task_folder == "1" or task_folder == "2" or task_folder == "3" or task_folder == "4":
             dir_name = os.path.dirname(__file__)
-            base_path = os.path.join(dir_name + "\\tests", "task" + str(task_folder), "*.bin")
+            base_path = os.path.join(dir_name + "\\tests", "task" + str(task_folder), "*.bin") #The path where it will grab the files that it will run
         else: 
             print("That is not a number between 1 and 4")
             break
@@ -40,12 +40,12 @@ while True:
             print("Write the name of the file you would like to be run, just write the name between the \\ and .bin")
             answer = os.path.join(dir_name + "\\tests", f"task{task_folder}", input() + ".bin" )
             print("Running file: " + str(answer))
-            run_code(answer)
+            run_code(answer) #Runs a single file
         else: 
             print("Running all tasks")
-            for filename in glob.glob(base_path):
+            for filename in glob.glob(base_path): #Runs all the files in the folder on base_path
                 print(f"Reading file: {filename}")
-                run_code(filename)
+                run_code(filename) 
     else:
         print("Do you wish to end the program?")
         answer = Y_or_N()
