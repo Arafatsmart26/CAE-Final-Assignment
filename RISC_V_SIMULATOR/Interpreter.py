@@ -95,6 +95,7 @@ def Interpreter(instruction, registers, memory, program_counter):
                 case 103: #JALR
                     print("JALR")
                     JALR(instruction, registers, program_counter)
+                    #ECALL(program_counter)
                 case 99: #Branching
                     match funct3:
                         case 0: #BEQ

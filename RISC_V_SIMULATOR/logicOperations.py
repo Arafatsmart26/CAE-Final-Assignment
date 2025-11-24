@@ -75,10 +75,9 @@ def SW(instruction, registers, memory):
 
 #LOAD IMMEADIATE
 def LUI(instruction, registers):
-    imm = extractImmediate(instruction, 32, 12, "unsigned")
+    imm = extractImmediate(instruction, 32, 12, "unsigned") 
 
     registers[instructionAnd(instruction, 12, 7)].setContents(imm<<12)
-
 def AUIPC(instruction, registers, PC):
     imm = extractImmediate(instruction, 32, 12, "unsigned")
 
@@ -249,14 +248,19 @@ def JAL(instruction, registers, PC):
     if imm & (1 << 20):          # if bit 20 is 1 → negative number
         imm -= 1 << 21
 
-    registers[instructionAnd(instruction, 12, 7)].setContents(PC.getInstructionCounter()+4)
-    PC.addToProgramCounter(int(imm / 4) - 1)
+    registers[instructionAnd(instruction, 12, 7)].setContents(PC.getInstructionCounter()*4+1*4)
+    PC.addToProgramCounter(int(imm / 4) -1)
+   
+
 
 def JALR(instruction, registers, PC):
-    imm = extractImmediate(instruction, 32, 12, "signed")
+    rs1_val = registers[instructionAnd(instruction, 20, 15)].getContents()
+    imm = extractImmediate(instruction, 32, 20, "signed")
 
-    registers[instructionAnd(instruction, 12, 7)].setContents(PC.getInstructionCounter()+4)
-    PC.addToProgramCounter(int(imm / 4) - 1)
+    registers[instructionAnd(instruction, 12, 7)].setContents(PC.getInstructionCounter()*4+1*4)
+    PC.setInstructionCounter(int((rs1_val + imm) / 4)-1)
+    
+
 
 
 #Branch instructions
