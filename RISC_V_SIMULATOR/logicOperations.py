@@ -332,7 +332,7 @@ def ECALL(registers, PC):
 #Helper functions
 def instructionAnd(instruction, upperBound, lowerBound, bit_width = 32) -> int:
     mask = (1 << bit_width) - 1
-    instruction &= mask  # limit to 'bit_width' bits
+    instruction &= mask  # limit to bit_width bits
     return (instruction & (2**upperBound-2**lowerBound))>>lowerBound
 
 def extractImmediate(instruction, upperBound, lowerBound, immSign: str, bit_width = 32) -> int:
@@ -343,7 +343,7 @@ def extractImmediate(instruction, upperBound, lowerBound, immSign: str, bit_widt
     "unsigned" = the immediate should be handled as an unsigned immediate
     """
     mask = (1 << bit_width) - 1
-    instruction &= mask  # limit to 'bit_width' bits
+    instruction &= mask  
     binImm = bin((instruction & (2**upperBound-2**lowerBound))>>lowerBound)[2:]
     if len(binImm) < upperBound - lowerBound: # if binary value of the immediate is now shorter, then at least 1 leading '0' was removed:
         binImm = "0" + binImm # replace missing '0' to avoid issues with positive numbers being regarded as negative on accident
