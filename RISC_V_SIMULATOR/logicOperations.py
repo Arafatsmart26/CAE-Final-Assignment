@@ -260,7 +260,7 @@ def JALR(instruction, registers, PC):
     imm = extractImmediate(instruction, 32, 20, "signed")
 
     registers[instructionAnd(instruction, 12, 7)].setContents(PC.getInstructionCounter()*4+1*4)
-    PC.setInstructionCounter(int((rs1_val + imm) / 4)-1)
+    PC.setInstructionCounter(int((rs1_val + imm) / 4) - 1)
     
 
 
@@ -269,7 +269,9 @@ def JALR(instruction, registers, PC):
 def BEQ(instruction, registers, PC):
     rs1_val = registers[instructionAnd(instruction, 20, 15)].getContents()
     rs2_val = registers[instructionAnd(instruction, 25, 20)].getContents()
-
+    #We extract the branch immeadiate in a special way as branch immeadiates are SB-type and have scrambled immeadiates
+    #Then we convert the binary integer to a signed int
+    #These methods are lower in the code, as helper functions
     signed_imm = extractedBinIntToSignedInt(extractBranchImmediate(instruction), 13)
 
     if rs1_val == rs2_val:
@@ -325,6 +327,7 @@ def BGEU(instruction, registers, PC):
         PC.addToProgramCounter(int(raw_imm_bin / 4) - 1)
 
 def ECALL(registers, PC):
+    #Break the program if register 17 has the binary code representing integer 10
     if registers[17].getContents() == 10:
         PC.addToProgramCounter(PC.getMaxInstruction())
 
