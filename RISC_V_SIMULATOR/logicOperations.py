@@ -146,7 +146,7 @@ def SLL(instruction, registers):
     rs2_val = registers[instructionAnd(instruction, 25, 20)].getContents()
     
 
-    registers[instructionAnd(instruction, 12, 7)].setContents((rs1_val << rs2_val) & 0xFFFFFFFF)
+    registers[instructionAnd(instruction, 12, 7)].setContents((rs1_val << rs2_val) & 0xFFFFFFFF) # AND with 0xFFFFFFFF to make sure it is 32 bits
 
 def SLLI(instruction, registers):
     rs1_val = registers[instructionAnd(instruction, 20, 15)].getContents()
@@ -164,8 +164,8 @@ def SRAI(instruction, registers):
     rs1_val = registers[instructionAnd(instruction, 20, 15)].getContents()
     imm = extractImmediate(instruction, 25, 20, "signed")
 
-    if rs1_val & 0x80000000:
-        rs1_val -= 0x100000000
+    if rs1_val & 0x80000000: # Checking if the register value should be negative
+        rs1_val -= 0x100000000 # Converts to negative int two's complement 
 
     rs1_val >>= imm
     
@@ -236,21 +236,22 @@ def SLTIU(instruction, registers):
 # Jump instructions
 # Function from CHATGPT
 def JAL(instruction, registers, PC):
+    #Splits the immeadiate
     imm20   = (instruction >> 31) & 0x1
     imm10_1 = (instruction >> 21) & 0x3FF
     imm11   = (instruction >> 20) & 0x1
     imm19_12= (instruction >> 12) & 0xFF
-
+    #Concenates the immeadiate in the right order
     imm = (imm20 << 20) \
     | (imm19_12 << 12) \
     | (imm11 << 11) \
     | (imm10_1 << 1)
-
-    if imm & (1 << 20):          # if bit 20 is 1 → negative number
+    #Converts the immeadiate to an negative int if the sign bit is 1
+    if imm & (1 << 20):          
         imm -= 1 << 21
 
-    registers[instructionAnd(instruction, 12, 7)].setContents(PC.getInstructionCounter()*4+1*4)
-    PC.addToProgramCounter(int(imm / 4) - 1)
+    registers[instructionAnd(instruction, 12, 7)].setContents(PC.getInstructionCounter()*4+1*4)#We multiply by four to save the value of the program counter as bytes
+    PC.addToProgramCounter(int(imm / 4) - 1)#We divide the immeadiate because we handle the program counter as word, and subtract by one because runCode() always adds one to the PC
    
 
 
