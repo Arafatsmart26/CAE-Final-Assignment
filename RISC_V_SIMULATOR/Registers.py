@@ -8,6 +8,8 @@ class Register:
     def getContents(self):
         return self.contents
 
+# this function initializes all our registers
+# this also means our register list contains the registers in the correct order (x0-x31)
 def Initialize():
     registers=[]
     for i in range(0,32):

@@ -18,5 +18,6 @@ class Memory:
     def addToMemoryContent(self,content):
         self.content += content
 
+# function to create a new memory object, with a given address and contents
 def addMemory(memory_address, content):
-    return Memory(memory_address,content)
+    return Memory(memory_address, content)

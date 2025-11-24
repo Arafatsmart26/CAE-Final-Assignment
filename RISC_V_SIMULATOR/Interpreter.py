@@ -4,16 +4,16 @@ from Program_Counter import *
 
 def Interpreter(instruction, registers, memory, program_counter):
     program_counter = program_counter
-    opcode = instructionAnd(instruction, 7, 0) #We take the last 7 bits which is the opcode. Python includes the lower bound but excludes the upper
-    funct3 = instructionAnd(instruction, 15, 12) #Not all instructions have a funct3 or funct7 field but we define it here as it is always the same place
-    funct7 = instructionAnd(instruction, 32, 25) #If the instruction doesn't use these fields, it won't call these variables anyway
-    match instructionAnd(instruction, 7, 4): #In order to be more effective the match statement uses the first 3 bits so that every instruction runs more effectively
+    opcode = instructionAnd(instruction, 7, 0) # We take the last 7 bits which is the opcode. Python includes the lower bound but excludes the upper
+    funct3 = instructionAnd(instruction, 15, 12) # Not all instructions have a funct3 or funct7 field but we define it here as it is always the same place
+    funct7 = instructionAnd(instruction, 32, 25) # If the instruction doesn't use these fields, it won't call these variables anyway
+    match instructionAnd(instruction, 7, 4): # In order to be more effective the match statement uses the first 3 bits so that every instruction runs more effectively
         case 1:
             match opcode:
                 case 23: #AUIPC
                     print("AUIPC")
                     AUIPC(instruction, registers, program_counter)
-                case 19: #Logic immeadiate operations
+                case 19: #Logic immediate operations
                     match funct3:
                         case 0: #ADDI
                             print("ADDI")
@@ -133,7 +133,7 @@ def Interpreter(instruction, registers, memory, program_counter):
                     print("LHU")
                     LHU(instruction, registers, memory)
 
-        case 2: # save immeadiate operations
+        case 2: # save immediate operations
             match funct3:
                 case 0: #SB
                     print("SB")
@@ -147,7 +147,7 @@ def Interpreter(instruction, registers, memory, program_counter):
         case 7:
             #ECall method
             print("ECall")
-            ECALL(registers, program_counter)
+            ECALL(registers, program_counter) # this only checks if x17 contains '10', and stops us if so (check the function!)
 
     # after every instruction, verify that x0 is '0'. If not, make it so.
     if registers[0].getContents() != 0:

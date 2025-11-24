@@ -2,6 +2,8 @@ class PC:
     def __init__(self, instructions = [], counter = 0):
         self.instructions = instructions
         self.counter = counter
+
+        # value to keep track of how many instructions the program needs - if the program counter exceeds this, runCode() stops executing the program
         self.counter_max = len(instructions)
 
     def nextInstruction(self):
