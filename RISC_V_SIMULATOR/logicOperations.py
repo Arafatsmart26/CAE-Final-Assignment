@@ -324,7 +324,7 @@ def BGEU(instruction, registers, PC):
         PC.addToProgramCounter(int(raw_imm_bin / 4) - 1)
 
 def ECALL(registers, PC):
-    if registers[17] == 10:
+    if registers[17].getContents() == 10:
         PC.addToProgramCounter(PC.getMaxInstruction())
 
 
