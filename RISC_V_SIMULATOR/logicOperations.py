@@ -234,6 +234,7 @@ def SLTIU(instruction, registers):
 
 
 # Jump instructions
+# Function from CHATGPT
 def JAL(instruction, registers, PC):
     imm20   = (instruction >> 31) & 0x1
     imm10_1 = (instruction >> 21) & 0x3FF
@@ -249,7 +250,7 @@ def JAL(instruction, registers, PC):
         imm -= 1 << 21
 
     registers[instructionAnd(instruction, 12, 7)].setContents(PC.getInstructionCounter()*4+1*4)
-    PC.addToProgramCounter(int(imm / 4) -1)
+    PC.addToProgramCounter(int(imm / 4) - 1)
    
 
 
