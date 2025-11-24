@@ -236,16 +236,27 @@ def SLTIU(instruction, registers):
 
 # Jump instructions
 def JAL(instruction, registers, PC):
-    imm = extractImmediate(instruction, 32, 12, "signed")
+    imm20   = (instruction >> 31) & 0x1
+    imm10_1 = (instruction >> 21) & 0x3FF
+    imm11   = (instruction >> 20) & 0x1
+    imm19_12= (instruction >> 12) & 0xFF
 
-    registers[instructionAnd(instruction, 12, 7)].setContents(PC+4)
-    PC.addToProgramCounter(imm)
+    imm = (imm20 << 20) \
+    | (imm19_12 << 12) \
+    | (imm11 << 11) \
+    | (imm10_1 << 1)
+
+    if imm & (1 << 20):          # if bit 20 is 1 → negative number
+        imm -= 1 << 21
+
+    registers[instructionAnd(instruction, 12, 7)].setContents(PC.getInstructionCounter()+4)
+    PC.addToProgramCounter(int(imm / 4) - 1)
 
 def JALR(instruction, registers, PC):
     imm = extractImmediate(instruction, 32, 12, "signed")
 
-    registers[instructionAnd(instruction, 12, 7)].setContents(PC+4)
-    PC.addToProgramCounter(imm)
+    registers[instructionAnd(instruction, 12, 7)].setContents(PC.getInstructionCounter()+4)
+    PC.addToProgramCounter(int(imm / 4) - 1)
 
 
 #Branch instructions
